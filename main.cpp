@@ -21,6 +21,7 @@ int main(){
     Program* p = new Program();
     p->attach(fs);
     p->attach(vs);
+    p->build();
     p->use();
     
     float vert[] = { -.5f, -.5f, 

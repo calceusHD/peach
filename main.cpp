@@ -4,19 +4,20 @@
 #include <cstdio>
 #include "gl/Program.h"
 #include "font/Print.h"
-#
+
 
 
 int main(){
     std::setlocale(LC_ALL, "en_US.UTF-8");
-    glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    GLFWwindow* window = glfwCreateWindow(800, 600, "test", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(100, 100, "test", nullptr, nullptr);
+    printf("window:%x\n", window);
     glfwMakeContextCurrent(window);
     glewExperimental = true;
     glewInit();
+    printf("createShader:%x\n", glCreateShader);
     Shader* fs = new Shader("res/shader/fragment.c", true, GL_FRAGMENT_SHADER);
     Shader* vs = new Shader("res/shader/vertex.c", true, GL_VERTEX_SHADER);
     Program* p = new Program();

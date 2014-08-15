@@ -12,9 +12,9 @@
 #include <cstring>
 #include <cwchar>
 #include "Print.h"
-#include "matrix.h"
+#include "Matrix.h"
 #include "gl/Program.h"
-#include "font.h"
+#include "Font.h"
 
 class Print {
 public:

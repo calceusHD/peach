@@ -94,7 +94,11 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
 
     if ( !done )
     {
+#ifdef __WIN32
         mkdir(u8"res/textures");
+#else
+	mkdir(u8"res/textures", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+#endif
         std::fstream texOut(("res/textures/font" + str.str()).c_str(), std::fstream::out | std::fstream::binary);
         texOut.write((char*)hv.data(), sizeof(uint32_t) * 4);
         texOut.write((char*)totalMap, sizeSq * m_charToIndex.size() * sizeof(float));

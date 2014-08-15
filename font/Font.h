@@ -2,14 +2,17 @@
 #define FONT_H
 
 #include <vector>
-//#include <thread>
 #include <atomic>
 #include <iostream>
 #include <fstream>
 #include <ctime>
 #include <unordered_map>
 #include <iomanip>
+#ifdef __WIN32
 #include <dir.h>
+#else
+#include <sys/stat.h>
+#endif
 #include <thread>
 #include <mutex>
 

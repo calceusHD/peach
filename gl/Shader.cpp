@@ -15,6 +15,9 @@ Shader::Shader(std::string name, bool file, GLenum type)
 		source = fileToBuf(name);
 	else
 		source = (char*)name.c_str();
+        if (source == nullptr) {
+            std::cout << "Shader: invalid source! name=" << name << std::endl;
+        }
 	this->id = glCreateShader(this->type);
 	//std::cout << source << std::endl;
 	glShaderSource(this->id, 1, (const char**)&source, 0);
@@ -28,7 +31,6 @@ Shader::Shader(std::string name, bool file, GLenum type)
 	{
 		char *infoLog = (char*)malloc(maxLength);
 		glGetShaderInfoLog(this->id, maxLength, &maxLength, infoLog);
-                std::cout << "In file: " << name << std::endl;
 		std::cout<<infoLog<<std::endl;
 		free(infoLog);
 	}

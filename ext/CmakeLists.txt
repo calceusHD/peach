@@ -1,4 +1,6 @@
 add_subdirectory(glew)
+add_subdirectory(freetype)
+set(GLM_FORCE_RADIANS ON CACHE BOOL "sdfglsd")
 
 
 set(GLFW_BUILD_EXAMPLES OFF FORCE BOOL "Build the GLFW example programs")

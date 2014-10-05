@@ -5,6 +5,7 @@
 #include "gl/Program.h"
 #include "font/Print.h"
 
+
 class Main {
     
     Print* print;
@@ -83,6 +84,7 @@ class Main {
                 glfwPollEvents();
             }
 
+
             std::cout << "Hello World. I'm Peach." << std::endl;
 
 
@@ -92,6 +94,7 @@ class Main {
 
 
     static void windowSizeCallback(GLFWwindow* win, int w, int h)
+
     {
         glViewport(0, 0, w, h);
         ((Main*)glfwGetWindowUserPointer(win))->print->setScreenSize(Vec2<unsigned int>(w, h));

@@ -8,7 +8,7 @@
 #ifndef PROGRAM_H_
 #define PROGRAM_H_
 
-#include "shader.h"
+#include "Shader.h"
 
 class Program {
 public:

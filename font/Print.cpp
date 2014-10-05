@@ -139,7 +139,7 @@ void Print::printfAt(float x, float y, float sx, float sy, const char *fmt, ...)
 
     tmpmat *= _mat;
 
-    glUniform1f(m_stepSize, 4 / ( sx * (float) _screen.x ) );
+    glUniform1f(m_stepSize, 2 / ( sx) );
 
     glUniform1i(m_tex, _font->_textureNumber);
 
@@ -191,5 +191,5 @@ void Print::setScreenSize(Vec2<unsigned int> size)
 	_screen = size;
     float ratio = (float)size.x / (float)size.y;
     _mat.set(IDENTITY_MATRIX);
-    _mat.ortho(-1.0f, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
+    _mat.ortho(-(float)size.x/2, (float)size.x/2, -(float)size.y/2, (float)size.y/2, 1.0f, -1.0f);
 }

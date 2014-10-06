@@ -1,9 +1,4 @@
-/*
- * Print.cpp
- *
- *  Created on: Mar 17, 2013
- *      Author: ICH
- */
+
 
 #include "Print.h"
 

@@ -1,9 +1,4 @@
-/*
- * fragment.c
- *
- *  Created on: Mar 16, 2013
- *      Author: ICH
- */
+
 
 #version 300 es
 

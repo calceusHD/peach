@@ -1,9 +1,4 @@
-/*
- * Print.h
- *
- *  Created on: Mar 17, 2013
- *      Author: ICH
- */
+
 
 #ifndef PRINT_H_
 #define PRINT_H_

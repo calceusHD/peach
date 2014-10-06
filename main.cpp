@@ -4,6 +4,9 @@
 #include <cstdio>
 #include "gl/Program.h"
 #include "font/Print.h"
+#include "TileRenderer.h"
+#include "Tile.h"
+#include "Stroke.h"
 
 
 class Main {
@@ -55,6 +58,13 @@ class Main {
             int cx, cy;
             int px, py;
             int cnt = 0;
+            
+            
+            TileRenderer tr;
+            Tile t;
+            t.addStroke(new Stroke(new float[8]{-0.7f, 0.7f, 0.9f, 0.9f, 0.3f, -0.7f, -0.5f, -0.5f}, 4, 0.08f));
+            
+            
             while(!glfwWindowShouldClose(window))
             {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -78,7 +88,8 @@ class Main {
                     }
                 }
                 p->use();
-                glDrawArrays(GL_LINE_STRIP, 0, cnt);
+                //glDrawArrays(GL_LINE_STRIP, 0, cnt);
+                tr.renderTile(&t);
                 print->printfAt(-1.0f, 0.1f, 30.0f, 30.0f, u8"x:%i, y%i", cx, cy);
                 glfwSwapBuffers(window);
                 glfwPollEvents();

@@ -21,7 +21,7 @@ class Main {
             int width = 800, height = 600;
             std::setlocale(LC_ALL, "en_US.UTF-8");
             glfwInit();
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+            //glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
             GLFWwindow* window = glfwCreateWindow(width, height, "test", nullptr, nullptr);

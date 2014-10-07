@@ -1,7 +1,4 @@
 
-
-#include <windef.h>
-
 #include "Stroke.h"
 
 Stroke::Stroke(float *lineData, unsigned int cnt, float width) {

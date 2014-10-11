@@ -12,9 +12,14 @@ public:
     glm::vec2 offset;
     std::vector<Stroke*> strokes;
     
+    int* firsts = nullptr;
+    int* counts = nullptr;
+    unsigned int glBuffer;
+    
     Tile();
     Tile(const Tile& orig);
     void addStroke(Stroke* s);
+    void generateTileData();
     
     virtual ~Tile();
 private:

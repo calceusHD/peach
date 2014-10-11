@@ -1,5 +1,6 @@
 
 #include "Stroke.h"
+#include "glm/gtc/quaternion.hpp"
 
 Stroke::Stroke(float *lineData, unsigned int cnt, float width) {
     pointCount = cnt * 2;
@@ -12,7 +13,7 @@ Stroke::Stroke(float *lineData, unsigned int cnt, float width) {
         
         glm::vec2 line = (i == 0) ? next - cur : cur - prev;
         
-        glm::vec2 normal = glm::vec2(-line.y, line.x); 
+        glm::vec2 normal = glm::normalize(glm::vec2(-line.y, line.x));
         glm::vec2 tangent;
         if (i == 0)
         {

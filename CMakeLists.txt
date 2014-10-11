@@ -18,7 +18,7 @@ set(LIBS glfw glew freetype)
 if(WIN32)
 list(APPEND LIBS opengl32 gdi32)
 else()
-list(APPEND LIBS GL GLU X11 Xi Xcursor Xxf86vm pthread Xrandr)
+list(APPEND LIBS GL GLU X11 Xi Xcursor Xxf86vm pthread Xrandr wayland-client wayland-egl xkbcommon EGL)
 
 endif()
 target_link_libraries(Peach ${LIBS})

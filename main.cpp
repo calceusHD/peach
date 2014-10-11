@@ -8,6 +8,9 @@
 #include "Tile.h"
 #include "Stroke.h"
 
+#define mouseDown click && !clickPrev
+#define mouseUp !click && clickPrev
+#define mousePressed click
 
 class Main {
     
@@ -21,14 +24,21 @@ class Main {
             int width = 800, height = 600;
             std::setlocale(LC_ALL, "en_US.UTF-8");
             glfwInit();
-            //glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
             GLFWwindow* window = glfwCreateWindow(width, height, "test", nullptr, nullptr);
+            if (window == nullptr)
+            {
+                printf("cant create window");
+                return;
+            }
+            
             glfwSetWindowSizeCallback(window, windowSizeCallback);
             glfwMakeContextCurrent(window);
             glewExperimental = true;
             glewInit();
+            printf("%s\n", glGetString(GL_VERSION));
             Shader* fs = new Shader("res/shader/fragment.c", true, GL_FRAGMENT_SHADER);
             Shader* vs = new Shader("res/shader/vertex.c", true, GL_VERTEX_SHADER);
             Program* p = new Program();
@@ -64,6 +74,7 @@ class Main {
             Tile t;
             t.addStroke(new Stroke(new float[8]{-0.7f, 0.7f, 0.9f, 0.9f, 0.3f, -0.7f, -0.5f, -0.5f}, 4, 0.08f));
             
+            bool click = false, clickPrev = false;
             
             while(!glfwWindowShouldClose(window))
             {
@@ -71,7 +82,14 @@ class Main {
                 print->printfAt(0.0f, -0.0f, 100.0f, 100.0f, u8"1234567890hallo");
                 glBindVertexArray(vao);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
-                if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+                clickPrev = click;
+                click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+                if (mouseDown)
+                {
+                    memset(vert, 0, 2048 * sizeof(float));
+                    cnt = 0;
+                }
+                if (mousePressed)
                 {
                     double xpos, ypos;
                     glfwGetCursorPos(window, &xpos, &ypos);
@@ -84,10 +102,18 @@ class Main {
                         cnt ++;
                         px = cx;
                         py = cy;
+
                         glBufferData(GL_ARRAY_BUFFER, 2048 * sizeof(float), vert, GL_DYNAMIC_DRAW);
                     }
                 }
+                
                 p->use();
+                //glBufferData(GL_ARRAY_BUFFER, 2048 * sizeof(float), vert, GL_DYNAMIC_DRAW);
+                glDrawArrays(GL_LINE_STRIP, 0, cnt);
+                if (mouseUp)
+                {
+                    t.addStroke(new Stroke(vert, cnt, 0.002f));
+                }
                 //glDrawArrays(GL_LINE_STRIP, 0, cnt);
                 tr.renderTile(&t);
                 print->printfAt(-1.0f, 0.1f, 30.0f, 30.0f, u8"x:%i, y%i", cx, cy);

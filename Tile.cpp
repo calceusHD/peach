@@ -1,13 +1,17 @@
 
 
 #include <string.h>
-#include <X11/Xdefs.h>
 
 #include "Tile.h"
 #include "GL/glew.h"
 
 Tile::Tile() {
     glGenBuffers(1, &glBuffer);
+    glGenVertexArrays(1, &glVao);
+    glBindVertexArray(glVao);
+    glBindBuffer(GL_ARRAY_BUFFER, glBuffer);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
 Tile::Tile(const Tile& orig) {

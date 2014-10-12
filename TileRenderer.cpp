@@ -16,7 +16,6 @@ TileRenderer::~TileRenderer() {
 }
 
 void TileRenderer::renderTile(Tile* t) {
-    glBindBuffer(GL_ARRAY_BUFFER, t->glBuffer);
-    printf("cnt:%i", t->strokes.size());
+    glBindVertexArray(t->glVao);
     glMultiDrawArrays(GL_TRIANGLE_STRIP, t->firsts, t->counts, t->strokes.size());
 }

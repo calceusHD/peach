@@ -119,6 +119,7 @@ class Main {
                 print->printfAt(-1.0f, 0.1f, 30.0f, 30.0f, u8"x:%i, y%i", cx, cy);
                 glfwSwapBuffers(window);
                 glfwPollEvents();
+                
             }
 
 

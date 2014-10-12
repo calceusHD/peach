@@ -14,7 +14,7 @@ public:
     
     int* firsts = nullptr;
     int* counts = nullptr;
-    unsigned int glBuffer;
+    unsigned int glBuffer, glVao;
     
     Tile();
     Tile(const Tile& orig);

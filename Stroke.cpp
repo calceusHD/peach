@@ -1,6 +1,5 @@
 
 #include "Stroke.h"
-#include "glm/gtc/quaternion.hpp"
 
 Stroke::Stroke(float *lineData, unsigned int cnt, float width) {
     pointCount = cnt * 2;

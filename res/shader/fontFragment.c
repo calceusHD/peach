@@ -23,11 +23,11 @@ void main(void)
     
     //float tmp = charDataOut / 256.0;
     //float tmp = texture(tex, texCoords).r;
-    highp float nStepSize = max(0, min(0.5, stepSize));
+    highp float nStepSize = max(0.0, min(0.5, stepSize));
 	
 	uint iTmp = charDataOut / 4U;
 	
-	highp vec4 tmp = texture(tex, vec3(texCoords, max(0, min(0x100 - 1, floor(float(iTmp) + 0.5)))));
+	highp vec4 tmp = texture(tex, vec3(texCoords, max(0.0, min(float(0x100 - 1), floor(float(iTmp) + 0.5)))));
 	
 	highp float fTmp = 0.0;
 	switch ( charDataOut % 4U )

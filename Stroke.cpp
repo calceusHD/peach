@@ -3,7 +3,7 @@
 
 Stroke::Stroke(float *lineData, unsigned int cnt, float width) {
     pointCount = cnt * 2;
-    points = new float[pointCount * 2];
+    points = new float[pointCount * 3];
     for (unsigned int i = 0; i < cnt; ++i)
     {
         glm::vec2 prev = (i == 0) ? glm::vec2(0.0f) : glm::vec2(lineData[(i - 1) * 2], lineData[(i - 1) * 2 + 1]);
@@ -32,11 +32,13 @@ Stroke::Stroke(float *lineData, unsigned int cnt, float width) {
         printf("length:%f", length);
         glm::vec2 out = cur + miter * length;
         printf("x:%f, y:%f", out.x, out.y);
-        points[i * 4 + 0] = out.x;
-        points[i * 4 + 1] = out.y;
+        points[i * 6 + 0] = out.x;
+        points[i * 6 + 1] = out.y;
+        points[i * 6 + 2] = 1.0f;
         out = cur - miter * length;
-        points[i * 4 + 2] = out.x;
-        points[i * 4 + 3] = out.y;
+        points[i * 6 + 3] = out.x;
+        points[i * 6 + 4] = out.y;
+        points[i * 6 + 5] = 0.0f;
     }
     
     

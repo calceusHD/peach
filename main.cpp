@@ -112,7 +112,7 @@ class Main {
                 glDrawArrays(GL_LINE_STRIP, 0, cnt);
                 if (mouseUp)
                 {
-                    t.addStroke(new Stroke(vert, cnt, 0.002f));
+                    t.addStroke(new Stroke(vert, cnt, 0.008f));
                 }
                 //glDrawArrays(GL_LINE_STRIP, 0, cnt);
                 tr.renderTile(&t);

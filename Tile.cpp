@@ -11,7 +11,7 @@ Tile::Tile() {
     glBindVertexArray(glVao);
     glBindBuffer(GL_ARRAY_BUFFER, glBuffer);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
 Tile::Tile(const Tile& orig) {
@@ -35,18 +35,18 @@ void Tile::generateTileData() {
     delete[] counts;
     firsts = new int[strokes.size()];
     counts = new int[strokes.size()];
-    float *buffer = new float[2 * vertCount];
+    float *buffer = new float[3 * vertCount];
     int offs = 0;
     for (int i = 0; i < strokes.size(); ++i)
     {
         Stroke* s = strokes.at(i);
-        memcpy(buffer + offs * 2, s->points, 2 * s->pointCount * sizeof(float));
+        memcpy(buffer + offs * 3, s->points, 3 * s->pointCount * sizeof(float));
         firsts[i] = offs;
         counts[i] = s->pointCount;
         offs += s->pointCount;
     }
     glBindBuffer(GL_ARRAY_BUFFER, glBuffer);
-    glBufferData(GL_ARRAY_BUFFER, 2 * vertCount * sizeof(float), buffer, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 3 * vertCount * sizeof(float), buffer, GL_STATIC_DRAW);
     
     delete[] buffer;
 }

@@ -7,5 +7,5 @@ in highp float uv;
 void main(void)
 {
 
-    fragColor = vec4(uv, 1.0, 0.0, 1.0);
+    fragColor = vec4(1.0, 1.0, 0.0, uv > 0.5 ? smoothstep(1.0, 0.9, uv) : smoothstep(0.0, 0.1, uv));
 }

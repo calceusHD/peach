@@ -17,17 +17,19 @@ class Main {
     Print* print;
     Font* font;
     TextureManager * tm;
+    TileRenderer *tr;
+    Vec2<unsigned int> screen;
     public:
     
         Main() 
         {
-            int width = 800, height = 600;
+            screen = Vec2<unsigned int>(800, 600);
             std::setlocale(LC_ALL, "en_US.UTF-8");
             glfwInit();
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-            GLFWwindow* window = glfwCreateWindow(width, height, "test", nullptr, nullptr);
+            GLFWwindow* window = glfwCreateWindow(screen.x, screen.y, "test", nullptr, nullptr);
             if (window == nullptr)
             {
                 printf("cant create window");
@@ -50,7 +52,7 @@ class Main {
             font = new Font(512, "res/font/DroidSans.woff", 32, tm);
             print = new Print(font);
             //print.set(&font, "res/shader/fontVertex.c", "res/shader/fontFragment.c");
-            print->setScreenSize(Vec2<unsigned int>(width, height));
+            print->setScreenSize(screen);
             float* vert = new float[2048];
             uint32_t vao;
             glGenVertexArrays(1, &vao);
@@ -70,16 +72,19 @@ class Main {
             int cnt = 0;
             
             
-            TileRenderer tr;
+            tr = new TileRenderer();
+            tr->setScreenSize(screen);
             Tile t;
             t.addStroke(new Stroke(new float[8]{-0.7f, 0.7f, 0.9f, 0.9f, 0.3f, -0.7f, -0.5f, -0.5f}, 4, 0.08f));
-            
+            double time, timeo;
             bool click = false, clickPrev = false;
-            
+            glfwSwapInterval(0);
             while(!glfwWindowShouldClose(window))
             {
+                timeo = time;
+                time = glfwGetTime();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                print->printfAt(0.0f, -0.0f, 100.0f, 100.0f, u8"1234567890hallo");
+                
                 glBindVertexArray(vao);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
                 clickPrev = click;
@@ -97,8 +102,8 @@ class Main {
                     cy = floor(ypos);
                     if (px != cx && py != cy && cnt < 1024)
                     {
-                        vert[cnt * 2 + 0] = ((float)cx / width - 0.5f) * 2.0f;
-                        vert[cnt * 2 + 1] = -((float)cy / height - 0.5f) * 2.0f;
+                        vert[cnt * 2 + 0] = ((float)cx / screen.x - 0.5f) * 2.0f * screen.x / 1000.0f;
+                        vert[cnt * 2 + 1] = -((float)cy / screen.y - 0.5f) * 2.0f * screen.y / 1000.0f;
                         cnt ++;
                         px = cx;
                         py = cy;
@@ -115,8 +120,9 @@ class Main {
                     t.addStroke(new Stroke(vert, cnt, 0.008f));
                 }
                 //glDrawArrays(GL_LINE_STRIP, 0, cnt);
-                tr.renderTile(&t);
+                tr->renderTile(&t);
                 print->printfAt(-1.0f, 0.1f, 30.0f, 30.0f, u8"x:%i, y%i", cx, cy);
+                print->printfAt(-300.0f, 100.0f, 16.0f, 16.0f, u8"Fps:%f", 1/(time-timeo));
                 glfwSwapBuffers(window);
                 glfwPollEvents();
                 
@@ -135,7 +141,12 @@ class Main {
 
     {
         glViewport(0, 0, w, h);
-        ((Main*)glfwGetWindowUserPointer(win))->print->setScreenSize(Vec2<unsigned int>(w, h));
+        
+        Main* main = (Main*)glfwGetWindowUserPointer(win);
+        main->screen = Vec2<unsigned int>(w, h);
+        main->print->setScreenSize(main->screen);
+        main->tr->setScreenSize(main->screen);
+        
     }
 };
 

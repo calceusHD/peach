@@ -16,11 +16,15 @@ public:
     Vec2<unsigned int> size;
     unsigned int sizeUniform;
     unsigned int mvpUniform;
+    unsigned int debugUniform;
+    bool debug;
     Matrix<float> mvp;
     TileRenderer();
     TileRenderer(const TileRenderer& orig);
     virtual ~TileRenderer();
     
+    void setDebug(bool on);
+    bool getDebug();
     void setScreenSize(Vec2<unsigned int> size);
     void renderTile(Tile* t);
 private:

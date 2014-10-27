@@ -37,6 +37,7 @@ class Main {
             }
             
             glfwSetWindowSizeCallback(window, windowSizeCallback);
+            glfwSetKeyCallback(window, keyCallback);
             glfwMakeContextCurrent(window);
             glewExperimental = true;
             glewInit();
@@ -53,7 +54,7 @@ class Main {
             print = new Print(font);
             //print.set(&font, "res/shader/fontVertex.c", "res/shader/fontFragment.c");
             print->setScreenSize(screen);
-            float* vert = new float[2048];
+            glm::vec2* vert = new glm::vec2[1024];
             uint32_t vao;
             glGenVertexArrays(1, &vao);
             glBindVertexArray(vao);
@@ -61,21 +62,21 @@ class Main {
             glGenBuffers(1, &vbo);
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glEnableVertexAttribArray(0);
-            glBufferData(GL_ARRAY_BUFFER, 2048 * sizeof(float), vert, GL_DYNAMIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, 1024 * sizeof(glm::vec2), vert, GL_DYNAMIC_DRAW);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
             glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
             glEnable(GL_BLEND);
             glfwSetWindowUserPointer(window, this);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            int cx, cy;
-            int px, py;
+            double cx, cy;
+            double px, py;
             int cnt = 0;
             
             
             tr = new TileRenderer();
             tr->setScreenSize(screen);
             Tile t;
-            t.addStroke(new Stroke(new float[8]{-0.7f, 0.7f, 0.9f, 0.9f, 0.3f, -0.7f, -0.5f, -0.5f}, 4, 0.08f));
+            t.addStroke(new Stroke((glm::vec2*)new float[8]{-0.2f, 0.1f, 0.3f, 0.0f, -0.2f, -0.01f}, 3, 0.08f));
             double time, timeo;
             bool click = false, clickPrev = false;
             glfwSwapInterval(0);
@@ -83,7 +84,7 @@ class Main {
             {
                 timeo = time;
                 time = glfwGetTime();
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glClear(GL_COLOR_BUFFER_BIT);
                 
                 glBindVertexArray(vao);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -96,14 +97,13 @@ class Main {
                 }
                 if (mousePressed)
                 {
-                    double xpos, ypos;
-                    glfwGetCursorPos(window, &xpos, &ypos);
-                    cx = floor(xpos);
-                    cy = floor(ypos);
+                    glfwGetCursorPos(window, &cx, &cy);
+
                     if (px != cx && py != cy && cnt < 1024)
                     {
-                        vert[cnt * 2 + 0] = ((float)cx / screen.x - 0.5f) * 2.0f * screen.x / 1000.0f;
-                        vert[cnt * 2 + 1] = -((float)cy / screen.y - 0.5f) * 2.0f * screen.y / 1000.0f;
+                        //vert[cnt] = glm::vec2(cx, -cy) / 500.0f - glm::vec2(screen.x, -screen.y) / 1000.0f;
+                        vert[cnt] = glm::vec2((cx / screen.x - 0.5f) * 2.0f * screen.x / 1000.0f,
+                            -(cy / screen.y - 0.5f) * 2.0f * screen.y / 1000.0f);
                         cnt ++;
                         px = cx;
                         py = cy;
@@ -117,11 +117,11 @@ class Main {
                 glDrawArrays(GL_LINE_STRIP, 0, cnt);
                 if (mouseUp)
                 {
-                    t.addStroke(new Stroke(vert, cnt, 0.008f));
+                    t.addStroke(new Stroke(vert, cnt, 0.02f));
                 }
                 //glDrawArrays(GL_LINE_STRIP, 0, cnt);
                 tr->renderTile(&t);
-                print->printfAt(-1.0f, 0.1f, 30.0f, 30.0f, u8"x:%i, y%i", cx, cy);
+                print->printfAt(-1.0f, 0.1f, 30.0f, 30.0f, u8"x:%f, y:%f", cx, cy);
                 print->printfAt(-300.0f, 100.0f, 16.0f, 16.0f, u8"Fps:%f", 1/(time-timeo));
                 glfwSwapBuffers(window);
                 glfwPollEvents();
@@ -138,7 +138,6 @@ class Main {
 
 
     static void windowSizeCallback(GLFWwindow* win, int w, int h)
-
     {
         glViewport(0, 0, w, h);
         
@@ -146,6 +145,14 @@ class Main {
         main->screen = Vec2<unsigned int>(w, h);
         main->print->setScreenSize(main->screen);
         main->tr->setScreenSize(main->screen);
+        
+    }
+    
+    static void keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods) {
+        Main* main = (Main*)glfwGetWindowUserPointer(win);
+        if (key == GLFW_KEY_F9 && action == GLFW_PRESS)
+            main->tr->setDebug(!main->tr->getDebug());
+        
         
     }
 };

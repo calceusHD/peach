@@ -8,9 +8,9 @@
 
 class Stroke {
 public:
-    float *points;
+    glm::vec4* points;
     unsigned int pointCount;
-    Stroke(float *lineData, unsigned int cnt, float width);
+    Stroke(glm::vec2* lineData, unsigned int cnt, float width);
     Stroke(const Stroke& orig);
     virtual ~Stroke();
 private:

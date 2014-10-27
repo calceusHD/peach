@@ -1,28 +1,37 @@
 
 #include "Stroke.h"
+#include "LineGenrator.h"
 
-Stroke::Stroke(float *lineData, unsigned int cnt, float width) {
+
+Stroke::Stroke(glm::vec2* lineData, unsigned int cnt, float width) {
     pointCount = cnt * 2;
-    points = new float[pointCount * 4];
-    for (unsigned int i = 0; i < cnt; ++i)
+    points = new glm::vec4[pointCount + cnt]; // => pointCount * 1.5
+    unsigned int i = 0;
+    unsigned int pointCnt = 0;
+    while (i < cnt)
     {
         bool first = (i == 0);
         bool last = (i + 1 == cnt);
-        glm::vec2 prev = first ? glm::vec2(0.0f) : glm::vec2(lineData[(i - 1) * 2], lineData[(i - 1) * 2 + 1]);
-        glm::vec2 cur = glm::vec2(lineData[i * 2], lineData[i * 2 + 1]);
-        glm::vec2 next = last ? glm::vec2(0.0f) : glm::vec2(lineData[(i + 1) * 2], lineData[(i + 1) * 2 + 1]);
+        glm::vec2 prev = first ? glm::vec2(0.0f) : lineData[i - 1];
+        glm::vec2 cur = lineData[i];
+        glm::vec2 next = last ? glm::vec2(0.0f) : lineData[i + 1];
         
-        glm::vec2 line = first ? next - cur : cur - prev;
+        pointCnt += LineGenrator::generateStroke(first, last, cur, next, prev, points + sizeof(glm::vec4) * pointCnt, width);
+        /*
+        glm::vec2 lineP = first ? glm::vec2(0.0f) : cur - prev;
+        glm::vec2 lineN = last ? glm::vec2(0.0f) : next - cur;
         
-        glm::vec2 normal = glm::normalize(glm::vec2(-line.y, line.x));
+        glm::vec2 normalP = glm::normalize(glm::vec2(-lineP.y, lineP.x));
+        glm::vec2 normalN = glm::normalize(glm::vec2(-lineN.y, lineN.x));
+        glm::vec2 normal = first ? normalN : normalP;
         glm::vec2 tangent;
         if (first)
         {
-            tangent = line;
+            tangent = lineN;
         }
         else if (i + 1 == cnt)
         {
-            tangent = line;
+            tangent = lineP;
             
         }
         else
@@ -31,23 +40,36 @@ Stroke::Stroke(float *lineData, unsigned int cnt, float width) {
         }
         glm::vec2 miter = glm::vec2(-tangent.y, tangent.x);
         float scale = 1 / glm::dot(miter, normal);
-        if (scale > 2.0 && !first && !last)
-        {
-            printf("corner too sharp!%f, id:%i/%i\n", scale, i, cnt);
-        }
         float length = width * scale;
-        glm::vec2 out = cur + miter * length;
-        points[i * 8 + 0] = out.x;
-        points[i * 8 + 1] = out.y;
-        points[i * 8 + 2] = 1.0f;
-        points[i * 8 + 3] = width;
-        out = cur - miter * length;
-        points[i * 8 + 4] = out.x;
-        points[i * 8 + 5] = out.y;
-        points[i * 8 + 6] = 0.0f;
-        points[i * 8 + 7] = width;
+        if (scale > 1.7 && !first && !last)
+        {
+            printf("corner too sharp!%f, id:%i/%i, %f\n", scale, i, cnt, width);
+            glm::vec2 out = cur + normalP * width;
+            points[pointCnt * 2 + 0] = glm::vec4(out, 1.0f, width);
+            out = cur - miter * width * 2.0f;
+            points[pointCnt * 2 + 1] = glm::vec4(out, 0.0f, width);
+            ++pointCnt;
+            
+            out = cur + normalN * width;
+            points[pointCnt * 2 + 0] = glm::vec4(out, 1.0f, width);
+            out = cur - miter * width * 2.0f;
+            points[pointCnt * 2 + 1] = glm::vec4(out, 0.0f, width);
+            ++pointCnt;
+        }
+        else
+        {
+            glm::vec2 out = cur + miter * length;
+            points[pointCnt * 2 + 0] = glm::vec4(out, 1.0f, width);
+            
+            out = cur - miter * length;
+            points[pointCnt * 2 + 1] = glm::vec4(out, 0.0f, width);
+            ++pointCnt;
+        }
+        */
+        
+        ++i;
     }
-    
+    pointCount = pointCnt * 2;
     
 }
 

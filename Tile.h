@@ -9,6 +9,7 @@
 
 class Tile {
 public:
+    static constexpr const float TILE_SIZE = 512.0f / 1000.0f;
     glm::vec2 offset;
     std::vector<Stroke*> strokes;
     
@@ -20,6 +21,8 @@ public:
     Tile(const Tile& orig);
     void addStroke(Stroke* s);
     void generateTileData();
+    bool isInTile(glm::vec2 pnt);
+    static void getTilePosition(glm::ivec2* out, glm::vec2 in);
     
     virtual ~Tile();
 private:

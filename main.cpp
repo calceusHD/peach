@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cstdio>
+#include <vector>
 #include "gl/Program.h"
 #include "font/Print.h"
 #include "TileRenderer.h"
@@ -19,6 +20,9 @@ class Main {
     TextureManager * tm;
     TileRenderer *tr;
     Vec2<unsigned int> screen;
+    bool isClicked;
+    Tile* t;
+    std::vector<glm::vec2> points;
     public:
     
         Main() 
@@ -38,6 +42,8 @@ class Main {
             
             glfwSetWindowSizeCallback(window, windowSizeCallback);
             glfwSetKeyCallback(window, keyCallback);
+            glfwSetMouseButtonCallback(window, clickCallback);
+            glfwSetCursorPosCallback(window, mouseCallback);
             glfwMakeContextCurrent(window);
             glewExperimental = true;
             glewInit();
@@ -75,11 +81,12 @@ class Main {
             
             tr = new TileRenderer();
             tr->setScreenSize(screen);
-            Tile t;
-            t.addStroke(new Stroke((glm::vec2*)new float[8]{-0.2f, 0.1f, 0.3f, 0.0f, -0.2f, -0.01f}, 3, 0.08f));
+            t = new Tile();
+            //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+            //t.addStroke(new Stroke((glm::vec2*)new float[8]{-0.2f, 0.1f, 0.3f, 0.0f, -0.2f, -0.01f}, 3, 0.08f));
             double time, timeo;
             bool click = false, clickPrev = false;
-            glfwSwapInterval(0);
+            glfwSwapInterval(2);
             while(!glfwWindowShouldClose(window))
             {
                 timeo = time;
@@ -101,9 +108,13 @@ class Main {
 
                     if (px != cx && py != cy && cnt < 1024)
                     {
+                        
                         //vert[cnt] = glm::vec2(cx, -cy) / 500.0f - glm::vec2(screen.x, -screen.y) / 1000.0f;
-                        vert[cnt] = glm::vec2((cx / screen.x - 0.5f) * 2.0f * screen.x / 1000.0f,
-                            -(cy / screen.y - 0.5f) * 2.0f * screen.y / 1000.0f);
+                        
+                        
+                        glm::ivec2 t;
+                        Tile::getTilePosition(&t, vert[cnt]);
+                        printf("tx: %i, ty: %i\n", t.x, t.y);
                         cnt ++;
                         px = cx;
                         py = cy;
@@ -115,12 +126,9 @@ class Main {
                 p->use();
                 //glBufferData(GL_ARRAY_BUFFER, 2048 * sizeof(float), vert, GL_DYNAMIC_DRAW);
                 glDrawArrays(GL_LINE_STRIP, 0, cnt);
-                if (mouseUp)
-                {
-                    t.addStroke(new Stroke(vert, cnt, 0.02f));
-                }
+               
                 //glDrawArrays(GL_LINE_STRIP, 0, cnt);
-                tr->renderTile(&t);
+                tr->renderTile(t);
                 print->printfAt(-1.0f, 0.1f, 30.0f, 30.0f, u8"x:%f, y:%f", cx, cy);
                 print->printfAt(-300.0f, 100.0f, 16.0f, 16.0f, u8"Fps:%f", 1/(time-timeo));
                 glfwSwapBuffers(window);
@@ -151,9 +159,29 @@ class Main {
     static void keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods) {
         Main* main = (Main*)glfwGetWindowUserPointer(win);
         if (key == GLFW_KEY_F9 && action == GLFW_PRESS)
-            main->tr->setDebug(!main->tr->getDebug());
-        
-        
+            main->tr->setDebug(!main->tr->getDebug());   
+    }
+    
+    static void mouseCallback(GLFWwindow* win, double x, double y) {
+        Main* main = (Main*)glfwGetWindowUserPointer(win);
+        if (main->isClicked) {
+            printf("drawing x:%f y:%f\n", x, y);
+            main->points.push_back(glm::vec2((x / main->screen.x - 0.5f) * 2.0f * main->screen.x / 1000.0f,
+                            -(y / main->screen.y - 0.5f) * 2.0f * main->screen.y / 1000.0f));
+        }
+    }
+    
+    static void clickCallback(GLFWwindow* win, int button, int action, int mods) {
+        Main* main = (Main*)glfwGetWindowUserPointer(win);
+        if (button == GLFW_MOUSE_BUTTON_LEFT)
+        {
+            if (action == GLFW_RELEASE)
+            {
+                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.005f));
+                main->points.clear();
+            }
+            main->isClicked = action == GLFW_PRESS;
+        }
     }
 };
 

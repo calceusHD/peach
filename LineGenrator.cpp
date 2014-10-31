@@ -42,17 +42,33 @@ unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, 
     float length = width * scale;
     if (scale > 1.7 && !first && !last)
     {
-        printf("corner too sharp!%f, id:%i/%i, %f\n", scale, width);
-        glm::vec2 out = cur + normalP * width;
-        tgt[0] = glm::vec4(out, 1.0f, width);
-        out = cur - miter * width * 2.0f;
-        tgt[1] = glm::vec4(out, 0.0f, width);
+        printf("corner too sharp!%f, id:%i/%i, %f\n", tgt, tgt, scale, glm::dot(normalP, lineN));
+        if (glm::dot(normalP, lineN) < 0)
+        {
+            glm::vec2 out = cur + normalP * width;
+            tgt[0] = glm::vec4(out, 1.0f, width);
+            out = cur - miter * length;
+            tgt[1] = glm::vec4(out, 0.0f, width);
 
-        out = cur + normalN * width;
-        tgt[2] = glm::vec4(out, 1.0f, width);
-        out = cur - miter * width * 2.0f;
-        tgt[3] = glm::vec4(out, 0.0f, width);
+            out = cur + normalN * width;
+            tgt[2] = glm::vec4(out, 1.0f, width);
+            out = cur - miter * length;
+            tgt[3] = glm::vec4(out, 0.0f, width);
+        }
+        else
+        {
+            glm::vec2 out = cur + miter * width * 2.0f;
+            tgt[0] = glm::vec4(out, 1.0f, width);
+            out = cur - normalP * width;
+            tgt[1] = glm::vec4(out, 0.0f, width);
+
+            out = cur + miter * width * 2.0f;
+            tgt[2] = glm::vec4(out, 1.0f, width);
+            out = cur - normalN * width;
+            tgt[3] = glm::vec4(out, 0.0f, width);
+        }
         return 2;
+            
     }
     else
     {

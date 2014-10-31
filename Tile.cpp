@@ -1,6 +1,7 @@
 
 
 #include <string.h>
+#include <cmath>
 
 #include "Tile.h"
 #include "GL/glew.h"
@@ -12,6 +13,8 @@ Tile::Tile() {
     glBindBuffer(GL_ARRAY_BUFFER, glBuffer);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    addStroke(new Stroke((glm::vec2*)new float[8]{TILE_SIZE, 0.0f, TILE_SIZE, TILE_SIZE, 0.0f, 0.0f, 0.0f, TILE_SIZE}, 4, 0.04f));
+    //addStroke(new Stroke((glm::vec2*)new float[8]{TILE_SIZE, 0.0f, TILE_SIZE, TILE_SIZE, 0.0f, 0.0f, 0.0f, TILE_SIZE}, 4, 0.04f));
 }
 
 Tile::Tile(const Tile& orig) {
@@ -35,7 +38,8 @@ void Tile::generateTileData() {
     delete[] counts;
     firsts = new int[strokes.size()];
     counts = new int[strokes.size()];
-    float *buffer = new float[4 * vertCount];
+    float *buffer;
+    buffer = new float[4 * vertCount];
     int offs = 0;
     for (int i = 0; i < strokes.size(); ++i)
     {
@@ -48,5 +52,10 @@ void Tile::generateTileData() {
     glBindBuffer(GL_ARRAY_BUFFER, glBuffer);
     glBufferData(GL_ARRAY_BUFFER, 4 * vertCount * sizeof(float), buffer, GL_STATIC_DRAW);
     
-    delete[] buffer;
+    //delete[] buffer;
+}
+
+void Tile::getTilePosition(glm::ivec2* out, glm::vec2 in) {
+    out->x = std::floor(in.x / TILE_SIZE);
+    out->y = std::floor(in.y / TILE_SIZE);
 }

@@ -4,7 +4,7 @@
 
 layout(location = 0) out highp vec4 fragColor;
 in highp float uv;
-in highp float width;
+flat in highp float width;
 uniform highp int debug;
 uniform highp float size;
 void main(void)

@@ -10,6 +10,7 @@
 
 #include <glm/glm.hpp>
 #include <cstdio>
+#include <cmath>
 
 class LineGenrator {
 public:

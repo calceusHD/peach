@@ -74,9 +74,6 @@ class Main {
             glEnable(GL_BLEND);
             glfwSetWindowUserPointer(window, this);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            double cx, cy;
-            double px, py;
-            int cnt = 0;
             
             
             tr = new TileRenderer();
@@ -85,7 +82,6 @@ class Main {
             //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
             //t.addStroke(new Stroke((glm::vec2*)new float[8]{-0.2f, 0.1f, 0.3f, 0.0f, -0.2f, -0.01f}, 3, 0.08f));
             double time, timeo;
-            bool click = false, clickPrev = false;
             glfwSwapInterval(2);
             while(!glfwWindowShouldClose(window))
             {
@@ -95,55 +91,20 @@ class Main {
                 
                 glBindVertexArray(vao);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
-                clickPrev = click;
-                click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-                if (mouseDown)
-                {
-                    memset(vert, 0, 2048 * sizeof(float));
-                    cnt = 0;
-                }
-                if (mousePressed)
-                {
-                    glfwGetCursorPos(window, &cx, &cy);
-
-                    if (px != cx && py != cy && cnt < 1024)
-                    {
-                        
-                        //vert[cnt] = glm::vec2(cx, -cy) / 500.0f - glm::vec2(screen.x, -screen.y) / 1000.0f;
-                        
-                        
-                        glm::ivec2 t;
-                        Tile::getTilePosition(&t, vert[cnt]);
-                        printf("tx: %i, ty: %i\n", t.x, t.y);
-                        cnt ++;
-                        px = cx;
-                        py = cy;
-
-                        glBufferData(GL_ARRAY_BUFFER, 2048 * sizeof(float), vert, GL_DYNAMIC_DRAW);
-                    }
-                }
+             
                 
-                p->use();
-                //glBufferData(GL_ARRAY_BUFFER, 2048 * sizeof(float), vert, GL_DYNAMIC_DRAW);
-                glDrawArrays(GL_LINE_STRIP, 0, cnt);
                
                 //glDrawArrays(GL_LINE_STRIP, 0, cnt);
                 tr->renderTile(t);
-                print->printfAt(-1.0f, 0.1f, 30.0f, 30.0f, u8"x:%f, y:%f", cx, cy);
-                print->printfAt(-300.0f, 100.0f, 16.0f, 16.0f, u8"Fps:%f", 1/(time-timeo));
+                print->printfAt(-300.0f, 100.0f, 16.0f, 16.0f, u8"Fps:%03.3f", 1/(time-timeo));
                 glfwSwapBuffers(window);
                 glfwPollEvents();
                 
             }
 
-
             std::cout << "Hello World. I'm Peach." << std::endl;
 
-
-
         }
-
-
 
     static void windowSizeCallback(GLFWwindow* win, int w, int h)
     {
@@ -165,7 +126,7 @@ class Main {
     static void mouseCallback(GLFWwindow* win, double x, double y) {
         Main* main = (Main*)glfwGetWindowUserPointer(win);
         if (main->isClicked) {
-            printf("drawing x:%f y:%f\n", x, y);
+            //printf("drawing x:%f y:%f\n", x, y);
             main->points.push_back(glm::vec2((x / main->screen.x - 0.5f) * 2.0f * main->screen.x / 1000.0f,
                             -(y / main->screen.y - 0.5f) * 2.0f * main->screen.y / 1000.0f));
         }
@@ -177,7 +138,7 @@ class Main {
         {
             if (action == GLFW_RELEASE)
             {
-                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.005f));
+                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.007f));
                 main->points.clear();
             }
             main->isClicked = action == GLFW_PRESS;

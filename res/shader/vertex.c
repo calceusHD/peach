@@ -4,7 +4,7 @@
 
 layout(location = 0) in vec4 pos;
 out highp float uv;
-out highp float width;
+flat out highp float width;
 uniform highp mat4 mvp;
 void main(void)
 {

@@ -8,7 +8,8 @@
 
 class Stroke {
 public:
-    glm::vec4* points;
+    glm::vec2* points;
+    glm::vec4* pointsAux;
     unsigned int pointCount;
     unsigned long id;
     Stroke(glm::vec2* lineData, unsigned int cnt, float width);

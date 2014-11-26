@@ -16,7 +16,7 @@ LineGenrator::LineGenrator(const LineGenrator& orig) {
 LineGenrator::~LineGenrator() {
 }
 
-unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, glm::vec2 next, glm::vec2 prev, glm::vec4* tgt, float width) {
+unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, glm::vec2 next, glm::vec2 prev, glm::vec2* tgtXy, glm::vec4* tgtAux, float width, unsigned int count) {
     glm::vec2 lineP = first ? glm::vec2(0.0f) : cur - prev;
     glm::vec2 lineN = last ? glm::vec2(0.0f) : next - cur;
 
@@ -40,33 +40,35 @@ unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, 
     glm::vec2 miter = glm::vec2(-tangent.y, tangent.x);
     float scale = 1 / glm::dot(miter, normal);
     float length = width * scale;
+    float v1 = (count % 2) == 0 ? 1.0f : 0.0f;
+    float v2 = (count % 2) == 0 ? 0.0f : 1.0f;
     if (scale > 1.7 && !first && !last)
     {
         float lim = std::min(length, std::max(glm::length(lineP), glm::length(lineN)));
-        printf("corner too sharp!%f, id:%i/%i, %f\n", tgt, tgt, scale, glm::dot(normalP, lineN));
+        printf("corner too sharp!%f, id:%i/%i, %f\n", tgtXy, tgtXy, scale, glm::dot(normalP, lineN));
         if (glm::dot(normalP, lineN) < 0)
         {
-            glm::vec2 out = cur + normalP * width;
-            tgt[0] = glm::vec4(out, 1.0f, width);
-            out = cur - miter * lim;
-            tgt[1] = glm::vec4(out, 0.0f, width);
+            tgtXy[0] = cur + normalP * width;
+            tgtAux[0] = glm::vec4(1.0f, v1, width, 0.0f);
+            tgtXy[1] = cur - miter * lim;
+            tgtAux[1] = glm::vec4(0.0f, v1, width, 0.0f);
 
-            out = cur + normalN * width;
-            tgt[2] = glm::vec4(out, 1.0f, 0.5f*(width + lim));
-            out = cur - miter * lim;
-            tgt[3] = glm::vec4(out, 0.0f, 0.5f*(width + lim));
+            tgtXy[2] = cur + normalN * width;
+            tgtAux[2] = glm::vec4(1.0f, v2, 0.5f*(width + lim), 0.0f);
+            tgtXy[3] = cur - miter * lim;
+            tgtAux[3] = glm::vec4(0.0f, v2, 0.5f*(width + lim), 0.0f);
         }
         else
         {
-            glm::vec2 out = cur + miter * lim;
-            tgt[0] = glm::vec4(out, 1.0f, width);
-            out = cur - normalP * width;
-            tgt[1] = glm::vec4(out, 0.0f, width);
+            tgtXy[0] = cur + miter * lim;
+            tgtAux[0] = glm::vec4(1.0f, v1, width, 0.0f);
+            tgtXy[1] = cur - normalP * width;
+            tgtAux[1] = glm::vec4(0.0f, v1, width, 0.0f);
 
-            out = cur + miter * lim;
-            tgt[2] = glm::vec4(out, 1.0f, 0.5f*(width + lim));
-            out = cur - normalN * width;
-            tgt[3] = glm::vec4(out, 0.0f, 0.5f*(width + lim));
+            tgtXy[2] = cur + miter * lim;
+            tgtAux[2] = glm::vec4(1.0f, v2, 0.5f*(width + lim), 0.0f);
+            tgtXy[3] = cur - normalN * width;
+            tgtAux[3] = glm::vec4(0.0f, v2, 0.5f*(width + lim), 0.0f);
             
         }
         return 2;
@@ -74,11 +76,11 @@ unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, 
     }
     else
     {
-        glm::vec2 out = cur + miter * length;
-        tgt[0] = glm::vec4(out, 1.0f, width);
+        tgtXy[0] = cur + miter * length;
+        tgtAux[0] = glm::vec4(1.0f, v1, width, 0.0f);
 
-        out = cur - miter * length;
-        tgt[1] = glm::vec4(out, 0.0f, width);
+        tgtXy[1] = cur - miter * length;
+        tgtAux[1] = glm::vec4(0.0f, v1, width, 0.0f);
         return 1;
     }
     

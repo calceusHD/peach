@@ -47,6 +47,12 @@ class Main {
             glfwMakeContextCurrent(window);
             glewExperimental = true;
             glewInit();
+            
+            
+            glDebugMessageCallback(debugCallback, nullptr);
+            glEnable(GL_DEBUG_OUTPUT);
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            
             printf("%s\n", glGetString(GL_VERSION));
             Shader* fs = new Shader("res/shader/fragment.c", true, GL_FRAGMENT_SHADER);
             Shader* vs = new Shader("res/shader/vertex.c", true, GL_VERTEX_SHADER);
@@ -83,6 +89,7 @@ class Main {
             //t.addStroke(new Stroke((glm::vec2*)new float[8]{-0.2f, 0.1f, 0.3f, 0.0f, -0.2f, -0.01f}, 3, 0.08f));
             double time, timeo;
             glfwSwapInterval(2);
+            
             while(!glfwWindowShouldClose(window))
             {
                 timeo = time;
@@ -143,6 +150,11 @@ class Main {
             }
             main->isClicked = action == GLFW_PRESS;
         }
+    }
+    
+    static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id,
+   GLenum severity, GLsizei length, const GLchar* message, const void* userData) {
+        printf("Error!: %s", message);
     }
 };
 

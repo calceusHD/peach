@@ -8,12 +8,13 @@
 
 class Stroke {
 public:
-    glm::vec2* points;
-    glm::vec4* pointsAux;
-    unsigned int pointCount;
+    glm::vec2* m_linePts;
+    unsigned int m_lineCnt;
+    float m_lineWidth;
     unsigned long id;
     Stroke(glm::vec2* lineData, unsigned int cnt, float width);
     Stroke(const Stroke& orig);
+    unsigned int generateVertexData(glm::vec2* tgtPoints, glm::vec4* tgtAux);
     virtual ~Stroke();
 private:
 

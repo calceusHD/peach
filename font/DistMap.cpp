@@ -111,9 +111,9 @@ float *DistMap::generate(unsigned int sizeo)
 
 
 
-        for (unsigned int i = 0;i < sizeo;i++)
+        for (unsigned int j = 0;j < sizeo;++j)
         {
-            for (unsigned int j = 0;j < sizeo;j++)
+            for (unsigned int i = 0;i < sizeo;++j)
             {
                 datao[j * sizeo + i] = findNearest(i * size / sizeo + size / sizeo / 2, j * size / sizeo + size / sizeo / 2);
             }
@@ -127,8 +127,8 @@ float *DistMap::generate(unsigned int sizeo)
 float *DistMap::getFullImage()
 {
     float *datao = new float[size * size];
-    for (unsigned int i = 0; i < size; i++)
-        for (unsigned int j = 0; j < size; j++)
+    for (unsigned int j = 0; j < size; ++j)
+        for (unsigned int i = 0; i < size; ++i)
             datao[j * size + i] = getColor(i, j) ? 1.0f : 0.0f;
     return datao;
 }

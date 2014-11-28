@@ -39,33 +39,33 @@ void Tile::addStroke(Stroke* s) {
 }
 
 void Tile::generateTileData() {
+    unsigned int maxVertCount = 0;
     unsigned int vertCount = 0;
     for (Stroke* s : m_strokes)
     {
-        vertCount += s->pointCount;
+        maxVertCount += s->m_lineCnt * 2 + s->m_lineCnt;
     }
     delete[] m_firsts;
     delete[] m_counts;
     m_firsts = new int[m_strokes.size()];
     m_counts = new int[m_strokes.size()];
     
-    glm::vec2* bufferXy = new glm::vec2[vertCount];
-    glm::vec4* bufferAux = new glm::vec4[vertCount];
+    glm::vec2* bufferXy = new glm::vec2[maxVertCount];
+    glm::vec4* bufferAux = new glm::vec4[maxVertCount];
     
     int offs = 0;
     for (int i = 0; i < m_strokes.size(); ++i)
     {
         Stroke* s = m_strokes.at(i);
-        memcpy(bufferXy + offs, s->points, sizeof(glm::vec2) * s->pointCount);
-        memcpy(bufferAux + offs, s->pointsAux, sizeof(glm::vec4) * s->pointCount);
-        m_firsts[i] = offs;
-        m_counts[i] = s->pointCount;
-        offs += s->pointCount;
+        unsigned int verts = s->generateVertexData(bufferXy + offs * 2, bufferAux + offs * 2);
+        offs += verts;
+        m_firsts[i] = offs * 2;
+        m_counts[i] = verts * 2;
     }
     glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer[0]);
-    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec2), bufferXy, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, offs * 2 * sizeof(glm::vec2), bufferXy, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer[1]);
-    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), bufferAux, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, offs * 2 * sizeof(glm::vec4), bufferAux, GL_STATIC_DRAW);
     
     delete[] bufferXy;
     delete[] bufferAux;

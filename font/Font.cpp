@@ -202,7 +202,7 @@ void Font::createGlyphsThreaded(FreeType *ft, unsigned int textureSize, float *t
         threads[i] = new std::thread(&Font::threadFunc, &td);
         
 #ifdef __WIN32
-        uint64_t aff = (1 << i * 2);
+        uint64_t aff = (1 << i);
         SetThreadAffinityMask((void*)threads[i]->native_handle(), aff);
 #endif
     }
@@ -216,7 +216,7 @@ void Font::createGlyphsThreaded(FreeType *ft, unsigned int textureSize, float *t
 
 }
 
-uint16_t WINAPI Font::threadFunc(void* lpParam )
+uint16_t Font::threadFunc(void* lpParam )
 {
     ThreadData *td = (ThreadData*)lpParam;
     //unsigned int i;

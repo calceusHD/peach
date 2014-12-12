@@ -57,15 +57,16 @@ void Tile::generateTileData() {
     for (int i = 0; i < m_strokes.size(); ++i)
     {
         Stroke* s = m_strokes.at(i);
-        unsigned int verts = s->generateVertexData(bufferXy + offs * 2, bufferAux + offs * 2);
+        unsigned int verts = s->generateVertexData(bufferXy + offs, bufferAux + offs);
+        m_firsts[i] = offs;
+        m_counts[i] = verts;
+        
         offs += verts;
-        m_firsts[i] = offs * 2;
-        m_counts[i] = verts * 2;
     }
     glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer[0]);
-    glBufferData(GL_ARRAY_BUFFER, offs * 2 * sizeof(glm::vec2), bufferXy, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, offs * sizeof(glm::vec2), bufferXy, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer[1]);
-    glBufferData(GL_ARRAY_BUFFER, offs * 2 * sizeof(glm::vec4), bufferAux, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, offs * sizeof(glm::vec4), bufferAux, GL_STATIC_DRAW);
     
     delete[] bufferXy;
     delete[] bufferAux;

@@ -21,32 +21,28 @@ uniform highp float color;
 void main(void)
 {
     
-    //float tmp = charDataOut / 256.0;
-    //float tmp = texture(tex, texCoords).r;
     highp float nStepSize = max(0.0, min(0.5, stepSize));
 	
-	uint iTmp = charDataOut / 4U;
-	
-	highp vec4 tmp = texture(tex, vec3(texCoords, max(0.0, min(float(0x100 - 1), floor(float(iTmp) + 0.5)))));
-	
-	highp float fTmp = 0.0;
-	switch ( charDataOut % 4U )
-	{
-		case 0U:
-			fTmp = tmp.r;
-			break;
-		case 1U:
-			fTmp = tmp.g;
-			break;
-		case 2U:
-			fTmp = tmp.b;
-			break;
-		case 3U:
-			fTmp = tmp.a;
-			break;
-		
-	
-	}
+    uint iTmp = (charDataOut >> 2); //divide by 4
+
+    highp vec4 tmp = texture(tex, vec3(texCoords, max(0.0, min(float(0x100 - 1), floor(float(iTmp) + 0.5)))));
+
+    highp float fTmp = 0.0;
+    switch ( charDataOut % 4U )
+    {
+            case 0U:
+                    fTmp = tmp.r;
+                    break;
+            case 1U:
+                    fTmp = tmp.g;
+                    break;
+            case 2U:
+                    fTmp = tmp.b;
+                    break;
+            case 3U:
+                    fTmp = tmp.a;
+                    break;
+    }
 	
     //float tmp2 = texture(tex2, texCoords).r;
 

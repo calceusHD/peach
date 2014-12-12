@@ -35,6 +35,15 @@ unsigned int Stroke::generateVertexData(glm::vec2* tgtPoints, glm::vec4* tgtAux)
         pointCnt += LineGenrator::generateStroke(first, last, cur, next, prev, tgtPoints + 2 * pointCnt, tgtAux + 2 * pointCnt, m_lineWidth, pointCnt);
         ++i;
     }
-    return pointCnt;
+    return pointCnt * 2;
 }
+
+void Stroke::setWidth(float width) {
+    m_lineWidth = width;
+}
+
+unsigned int Stroke::getId() {
+    return m_id;
+}
+
 

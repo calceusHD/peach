@@ -1,9 +1,3 @@
-/* 
- * File:   lineGenrator.h
- * Author: tab
- *
- * Created on 24 October 2014, 13:36
- */
 
 #ifndef LINEGENRATOR_H
 #define	LINEGENRATOR_H

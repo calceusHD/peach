@@ -10,17 +10,12 @@
 #include <iomanip>
 #ifdef __WIN32
 #include <dir.h>
+#include "windows.h"
 #else
 #include <sys/stat.h>
 #endif
 #include <thread>
 #include <mutex>
-
-#ifdef __WIN32
-#include "windows.h"
-#else
-#define WINAPI
-#endif
 
 #include "GL/glew.h"
 
@@ -61,7 +56,7 @@ class Font
         FT_GlyphSlot createGlyph(unsigned int id, unsigned int c, FreeType *ft, bool render);
         void createTexFromGlyph(unsigned int textureSize, FT_GlyphSlot gl, float *totalMap, unsigned int id);
         void createGlyphsThreaded(FreeType *ft, unsigned int textureSize, float *totalMap);
-        static uint16_t WINAPI threadFunc(void* lpParam );
+        static uint16_t threadFunc(void* lpParam );
         void populateIndex();
     protected:
     private:

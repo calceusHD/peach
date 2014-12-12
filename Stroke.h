@@ -11,9 +11,11 @@ public:
     glm::vec2* m_linePts;
     unsigned int m_lineCnt;
     float m_lineWidth;
-    unsigned long id;
+    unsigned long m_id;
     Stroke(glm::vec2* lineData, unsigned int cnt, float width);
     Stroke(const Stroke& orig);
+    void setWidth(float width);
+    unsigned int getId();
     unsigned int generateVertexData(glm::vec2* tgtPoints, glm::vec4* tgtAux);
     virtual ~Stroke();
 private:

@@ -113,7 +113,7 @@ float *DistMap::generate(unsigned int sizeo)
 
         for (unsigned int j = 0;j < sizeo;++j)
         {
-            for (unsigned int i = 0;i < sizeo;++j)
+            for (unsigned int i = 0;i < sizeo;++i)
             {
                 datao[j * sizeo + i] = findNearest(i * size / sizeo + size / sizeo / 2, j * size / sizeo + size / sizeo / 2);
             }

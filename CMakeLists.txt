@@ -9,6 +9,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -std=c+
 set(SOURCE_FILES)
 include(gl.cmake)
 include(font.cmake)
+add_custom_command(TARGET Peach POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/res"
+        ${PEACH_BINARY_DIR})
 file(COPY res DESTINATION ${PEACH_BINARY_DIR})
 list(APPEND SOURCE_FILES Tile.cpp TileRenderer.cpp Stroke.cpp LineGenrator.cpp)
 add_executable(Peach main.cpp ${SOURCE_FILES})

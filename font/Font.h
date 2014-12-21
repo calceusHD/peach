@@ -34,7 +34,7 @@
 class Font
 {
     struct ThreadData {
-    	std::unordered_map<unsigned long, unsigned long>::iterator it;
+    	std::unordered_map<unsigned int, unsigned int>::iterator it;
         Font *me;
         std::atomic<unsigned int> cnt;
         const char *name;
@@ -45,7 +45,7 @@ class Font
     };
     public:
     	std::mutex ctSec;
-    	std::unordered_map<unsigned long, unsigned long> m_charToIndex;
+    	std::unordered_map<unsigned int, unsigned int> m_charToIndex;
         std::vector<float> _data;
         std::vector<GlyphData> _glyphs;
         unsigned int _size;

@@ -32,6 +32,7 @@ class Main {
             glfwInit();
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
             GLFWwindow* window = glfwCreateWindow(screen.x, screen.y, "test", nullptr, nullptr);
             if (window == nullptr)
@@ -48,10 +49,10 @@ class Main {
             glewExperimental = true;
             glewInit();
             
-            
+            //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
             glDebugMessageCallback(debugCallback, nullptr);
-            glEnable(GL_DEBUG_OUTPUT);
-            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            //glEnable(GL_DEBUG_OUTPUT);
+            
             
             printf("%s\n", glGetString(GL_VERSION));
             Shader* fs = new Shader("res/shader/fragment.c", true, GL_FRAGMENT_SHADER);
@@ -148,13 +149,13 @@ class Main {
                 main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.007f));
                 main->points.clear();
             }
-            main->isClicked = action == GLFW_PRESS;
+            main->isClicked = (action == GLFW_PRESS);
         }
     }
     
     static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id,
    GLenum severity, GLsizei length, const GLchar* message, const void* userData) {
-        printf("Error!: %s", message);
+        printf("%s\n", message);
     }
 };
 

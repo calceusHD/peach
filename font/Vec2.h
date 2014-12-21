@@ -14,9 +14,7 @@ class Vec2
 
         float length();
 
-        unsigned int lengthSq();
-
-        float lengthSqf();
+        type lengthSq();
 
         bool operator== (const Vec2&) const;
 

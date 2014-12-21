@@ -34,13 +34,7 @@ float Vec2<type>::length()
 }
 
 template <class type>
-float Vec2<type>::lengthSqf()
-{
-    return x*x + y*y;
-}
-
-template <class type>
-unsigned int Vec2<type>::lengthSq()
+type Vec2<type>::lengthSq()
 {
     return x*x + y*y;
 }

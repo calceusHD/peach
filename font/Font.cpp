@@ -57,21 +57,7 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
 
     tex.close();
 
-    //time_t start = time(nullptr);
-
     unsigned int cnt = 0, num = m_charToIndex.size();
-
-    /*for ( std::pair<unsigned long, unsigned long> i : m_charToIndex )
-    {
-    	std::cout << "Char: " << i.first << " Index: " << i.second << " Done " << cnt << " of " << num << std::endl;
-    	FT_GlyphSlot gl = createGlyph(i.second, i.first, &m_freeType);
-    	createTexFromGlyph(textureSize, gl, totalMap, i.second);
-    	cnt++;
-    }*/
-
-
-    //std::cout << "total Time:" << time(nullptr) - start << std::endl;
-
 
     if ( !done )
     {
@@ -85,7 +71,7 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
     }
     else
     {
-        for (std::pair<unsigned long, unsigned long> i : m_charToIndex)
+        for (std::pair<unsigned int, unsigned int> i : m_charToIndex)
         {
 
         	createGlyph(i.second, i.first, &m_freeType, true);
@@ -222,7 +208,7 @@ uint16_t WINAPI Font::threadFunc(void* lpParam )
     //unsigned int i;
 
     FreeType ft(td->size, td->name);
-    std::unordered_map<unsigned long, unsigned long>::iterator i;
+    std::unordered_map<unsigned int, unsigned int>::iterator i;
     
     td->me->ctSec.lock();
     i = td->it++;
@@ -294,20 +280,13 @@ void Font::createTexFromGlyph(unsigned int textureSize, FT_GlyphSlot gl, float *
 
         float diff = 1/ ( max - min );
 
-        //max = 1 / max;
-
         min *= diff;
 
         min = -.5f;
 
-        //min = - 1 / min;
-
         for (unsigned int j = 0; j< sizeSq;j++)
         {
-            if ( out[j] > 0)
-                out[j] = out[j] * diff - min;
-            else
-                out[j] = out[j] * diff - min;
+            out[j] = out[j] * diff - min;
         }
     }
 
@@ -320,11 +299,11 @@ void Font::populateIndex()
 {
 	FT_ULong charCode;
 	FT_UInt gIndex;
-	unsigned long id = 0;
+	unsigned int id = 0;
 	charCode = m_freeType.getFirstChar(&gIndex);
 	while ( gIndex != 0 )
 	{
-		m_charToIndex.insert(std::pair<unsigned long, unsigned long>(charCode, id));
+		m_charToIndex.insert(std::pair<unsigned int, unsigned int>(charCode, id));
 		id++;
 
 		charCode = m_freeType.getNextChar(charCode, &gIndex);

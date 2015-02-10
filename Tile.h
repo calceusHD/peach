@@ -9,13 +9,15 @@
 
 class Tile {
 public:
+
     static constexpr const float TILE_SIZE = 512.0f / 1000.0f;
     glm::vec2 m_offset;
     std::vector<Stroke*> m_strokes;
+    bool m_dirty;
     
     int* m_firsts = nullptr;
     int* m_counts = nullptr;
-    unsigned int m_glBuffer[2], m_glVao;
+    unsigned int m_glBuffer, m_glVao;
     
     Tile();
     Tile(const Tile& orig);

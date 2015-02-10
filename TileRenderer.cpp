@@ -26,6 +26,7 @@ TileRenderer::~TileRenderer() {
 }
 
 void TileRenderer::renderTile(Tile* t) {
+    t->generateTileData();
     program.use();
     glUniform1f(sizeUniform, size.length());
     glUniform1i(debugUniform, debug);

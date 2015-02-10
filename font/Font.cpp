@@ -103,12 +103,12 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
     {
     	for (unsigned int j = 0; j < sizeSq; j++)
     	{
-    		unsigned int nOff = i * sizeSq * 4 + j * 4;
-    		unsigned int oOff = i * sizeSq * 4 + j;
-    		newMap[nOff + 0] = totalMap[oOff + sizeSq * 0];
-    		newMap[nOff + 1] = totalMap[oOff + sizeSq * 1];
-    		newMap[nOff + 2] = totalMap[oOff + sizeSq * 2];
-    		newMap[nOff + 3] = totalMap[oOff + sizeSq * 3];
+            unsigned int nOff = i * sizeSq * 4 + j * 4;
+            unsigned int oOff = i * sizeSq * 4 + j;
+            newMap[nOff + 0] = totalMap[oOff + sizeSq * 0];
+            newMap[nOff + 1] = totalMap[oOff + sizeSq * 1];
+            newMap[nOff + 2] = totalMap[oOff + sizeSq * 2];
+            newMap[nOff + 3] = totalMap[oOff + sizeSq * 3];
     	}
 
     }
@@ -121,20 +121,20 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
     	unsigned int i = m_charToIndex.size() / 4U;
     	unsigned int tmpMod = m_charToIndex.size() % 4U;
     	for (unsigned int j = 0; j < sizeSq; j++)
-		{
-			unsigned int nOff = i * sizeSq * 4 + j * 4;
-			unsigned int oOff = i * sizeSq * 4 + j;
-			newMap[nOff + 0] = totalMap[oOff + sizeSq * 0];
-			switch (tmpMod - 1)
-			{
-			case 3:
-				newMap[nOff + 3] = totalMap[oOff + sizeSq * 3];
-			case 2:
-				newMap[nOff + 2] = totalMap[oOff + sizeSq * 2];
-			case 1:
-				newMap[nOff + 1] = totalMap[oOff + sizeSq * 1];
-			}
-		}
+            {
+                unsigned int nOff = i * sizeSq * 4 + j * 4;
+                unsigned int oOff = i * sizeSq * 4 + j;
+                newMap[nOff + 0] = totalMap[oOff + sizeSq * 0];
+                switch (tmpMod - 1)
+                {
+                case 3:
+                    newMap[nOff + 3] = totalMap[oOff + sizeSq * 3];
+                case 2:
+                    newMap[nOff + 2] = totalMap[oOff + sizeSq * 2];
+                case 1:
+                    newMap[nOff + 1] = totalMap[oOff + sizeSq * 1];
+                }
+            }
     }
 
 
@@ -155,17 +155,12 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
 
     std::cout << "Max array layers: " << tmp << std::endl;
 
-    glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, textureSize, textureSize, nSize / 4, 0, GL_RGBA, GL_FLOAT, newMap);
-
-
+    glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, textureSize, textureSize, nSize / 4, 0, GL_RGBA, GL_FLOAT, newMap);
 
     checkErr("test1");
 
     free(totalMap);
 }
-//void Font::fillArray(float *inData, float *outData, )
-
-#define THREAD_COUNT cpuCnt
 
 void Font::createGlyphsThreaded(FreeType *ft, unsigned int textureSize, float *totalMap)
 {
@@ -182,8 +177,8 @@ void Font::createGlyphsThreaded(FreeType *ft, unsigned int textureSize, float *t
     
     unsigned int cpuCnt = std::thread::hardware_concurrency();
 
-    std::thread* threads[THREAD_COUNT];
-    for (unsigned int i = 0; i < THREAD_COUNT; i++)
+    std::thread* threads[cpuCnt];
+    for (unsigned int i = 0; i < cpuCnt; i++)
     {
         threads[i] = new std::thread(&Font::threadFunc, &td);
         
@@ -194,7 +189,7 @@ void Font::createGlyphsThreaded(FreeType *ft, unsigned int textureSize, float *t
     }
 
 
-    for (unsigned int i = 0;i < THREAD_COUNT; i++)
+    for (unsigned int i = 0;i < cpuCnt; i++)
     {
         threads[i]->join();
     }
@@ -280,13 +275,9 @@ void Font::createTexFromGlyph(unsigned int textureSize, FT_GlyphSlot gl, float *
 
         float diff = 1/ ( max - min );
 
-        min *= diff;
-
-        min = -.5f;
-
         for (unsigned int j = 0; j< sizeSq;j++)
         {
-            out[j] = out[j] * diff - min;
+            out[j] = out[j] * diff - .5f;
         }
     }
 
@@ -297,27 +288,27 @@ void Font::createTexFromGlyph(unsigned int textureSize, FT_GlyphSlot gl, float *
 
 void Font::populateIndex()
 {
-	FT_ULong charCode;
-	FT_UInt gIndex;
-	unsigned int id = 0;
-	charCode = m_freeType.getFirstChar(&gIndex);
-	while ( gIndex != 0 )
-	{
-		m_charToIndex.insert(std::pair<unsigned int, unsigned int>(charCode, id));
-		id++;
+    FT_ULong charCode;
+    FT_UInt gIndex;
+    unsigned int id = 0;
+    charCode = m_freeType.getFirstChar(&gIndex);
+    while ( gIndex != 0 )
+    {
+        m_charToIndex.insert(std::pair<unsigned int, unsigned int>(charCode, id));
+        id++;
 
-		charCode = m_freeType.getNextChar(charCode, &gIndex);
-	}
+        charCode = m_freeType.getNextChar(charCode, &gIndex);
+    }
 }
 
 unsigned int Font::getIdFromChar(unsigned int c)
 {
-	try {
-		return m_charToIndex.at(c);
-	} catch (std::exception &e) {
-		std::cout << e.what() << std::endl;
-	}
-	return 0;
+    try {
+        return m_charToIndex.at(c);
+    } catch (std::exception &e) {
+        std::cout << e.what() << std::endl;
+    }
+    return 0;
 }
 
 Font::~Font()

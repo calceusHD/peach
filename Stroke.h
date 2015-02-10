@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <cstdio>
+#include "Vertex.h"
 
 class Stroke {
 public:
@@ -16,7 +17,7 @@ public:
     Stroke(const Stroke& orig);
     void setWidth(float width);
     unsigned int getId();
-    unsigned int generateVertexData(glm::vec2* tgtPoints, glm::vec4* tgtAux);
+    unsigned int generateVertexData(Vertex* tgt);
     virtual ~Stroke();
 private:
 

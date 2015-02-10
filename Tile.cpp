@@ -8,21 +8,27 @@
 #include "GL/glew.h"
 
 Tile::Tile() {
-    glGenBuffers(2, m_glBuffer);
+    glGenBuffers(1, &m_glBuffer);
     glGenVertexArrays(1, &m_glVao);
     glBindVertexArray(m_glVao);
     
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
     
-    glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer[0]);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, pos));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, width));
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, cutoff));
+    glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, length));
     
-    glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer[1]);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    
     
     //addStroke(new Stroke((glm::vec2*)new float[8]{TILE_SIZE, 0.0f, TILE_SIZE, TILE_SIZE, 0.0f, 0.0f, 0.0f, TILE_SIZE}, 4, 0.04f));
-    addStroke(new Stroke((glm::vec2*)new float[8]{0.2f, 0.3f, 0.3f, -0.3f, 0.25f, 0.3f}, 3, 0.04f));
+    addStroke(new Stroke((glm::vec2*)new float[8]{0.23f, 0.3f, 0.3f, -0.3f, 0.25f, 0.3f}, 3, 0.04f));
     addStroke(new Stroke((glm::vec2*)new float[8]{0.0f, 0.3f, -0.1f, -0.3f, -0.05f, 0.3f}, 3, 0.04f));
     //addStroke(new Stroke((glm::vec2*)new float[8]{TILE_SIZE, 0.0f, TILE_SIZE, TILE_SIZE, 0.0f, 0.0f, 0.0f, TILE_SIZE}, 4, 0.04f));
 }
@@ -35,10 +41,13 @@ Tile::~Tile() {
 
 void Tile::addStroke(Stroke* s) {
     m_strokes.push_back(s);
-    generateTileData();
+    m_dirty = true;
 }
 
 void Tile::generateTileData() {
+    if (!m_dirty)
+        return;
+    m_dirty = false;
     unsigned int maxVertCount = 0;
     unsigned int vertCount = 0;
     for (Stroke* s : m_strokes)
@@ -50,26 +59,22 @@ void Tile::generateTileData() {
     m_firsts = new int[m_strokes.size()];
     m_counts = new int[m_strokes.size()];
     
-    glm::vec2* bufferXy = new glm::vec2[maxVertCount];
-    glm::vec4* bufferAux = new glm::vec4[maxVertCount];
+    Vertex* buffer = new Vertex[maxVertCount];
     
     int offs = 0;
     for (int i = 0; i < m_strokes.size(); ++i)
     {
         Stroke* s = m_strokes.at(i);
-        unsigned int verts = s->generateVertexData(bufferXy + offs, bufferAux + offs);
+        unsigned int verts = s->generateVertexData(buffer + offs);
         m_firsts[i] = offs;
         m_counts[i] = verts;
         
         offs += verts;
     }
-    glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer[0]);
-    glBufferData(GL_ARRAY_BUFFER, offs * sizeof(glm::vec2), bufferXy, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer[1]);
-    glBufferData(GL_ARRAY_BUFFER, offs * sizeof(glm::vec4), bufferAux, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer);
+    glBufferData(GL_ARRAY_BUFFER, offs * sizeof(Vertex), buffer, GL_STATIC_DRAW);
     
-    delete[] bufferXy;
-    delete[] bufferAux;
+    delete[] buffer;
 }
 
 void Tile::getTilePosition(glm::ivec2* out, glm::vec2 in) {

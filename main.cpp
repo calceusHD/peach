@@ -27,6 +27,7 @@ class Main {
     
         Main() 
         {
+            isClicked = false;
             screen = Vec2<unsigned int>(800, 600);
             std::setlocale(LC_ALL, "en_US.UTF-8");
             glfwInit();
@@ -77,7 +78,7 @@ class Main {
             glEnableVertexAttribArray(0);
             glBufferData(GL_ARRAY_BUFFER, 1024 * sizeof(glm::vec2), vert, GL_DYNAMIC_DRAW);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
-            glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glEnable(GL_BLEND);
             glfwSetWindowUserPointer(window, this);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -89,7 +90,7 @@ class Main {
             //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
             //t.addStroke(new Stroke((glm::vec2*)new float[8]{-0.2f, 0.1f, 0.3f, 0.0f, -0.2f, -0.01f}, 3, 0.08f));
             double time, timeo;
-            glfwSwapInterval(2);
+            glfwSwapInterval(1);
             
             while(!glfwWindowShouldClose(window))
             {
@@ -146,7 +147,7 @@ class Main {
         {
             if (action == GLFW_RELEASE)
             {
-                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.007f));
+                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.07f));
                 main->points.clear();
             }
             main->isClicked = (action == GLFW_PRESS);

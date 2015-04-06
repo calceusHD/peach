@@ -52,7 +52,7 @@ void Tile::generateTileData() {
     unsigned int vertCount = 0;
     for (Stroke* s : m_strokes)
     {
-        maxVertCount += s->m_lineCnt * 2 + s->m_lineCnt;
+        maxVertCount += s->m_lineCnt * 3;
     }
     delete[] m_firsts;
     delete[] m_counts;

@@ -119,11 +119,9 @@ void Print::printfAt(float x, float y, float sx, float sy, const char *fmt, ...)
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo[0]);
     glBufferData(GL_ARRAY_BUFFER, cCnt * 6 * sizeof(point), points, GL_DYNAMIC_DRAW);
-    //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo[1]);
     glBufferData(GL_ARRAY_BUFFER, cCnt * 6 * sizeof(uint32_t), data, GL_DYNAMIC_DRAW);
-    //glVertexAttribIPointer(1, 1, GL_UNSIGNED_BYTE, 0, 0);
 
 
     Matrix<float> tmpmat(IDENTITY_MATRIX);// = _mat;
@@ -149,7 +147,7 @@ void Print::printfAt(float x, float y, float sx, float sy, const char *fmt, ...)
 }
 
 unsigned int Print::getUcs4CharFromString(uint32_t *out, unsigned char *in)
-{
+{ //FIXME can overflow in buffer if last char contains malformed unicode!
 	unsigned int btCount = 0;
 	unsigned char in1 = *((unsigned char*)in);
 	//uint32_t tmp = 0;

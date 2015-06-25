@@ -1,4 +1,4 @@
-#version 300 es
+#version 330
 
 layout(location = 0) out highp vec4 fragColor;
 in highp vec2 uv;
@@ -10,9 +10,10 @@ uniform highp float size;
 void main(void)
 {
     highp float diff = 2.8 / width / 1000.0;
-    highp vec2 diffY = 2.8 / cutoff / 1000.0;
+    highp vec2 diffY = 2.8 / cutoff / 1000.0 * 10.0;
     highp float min, max;
     highp float minY, maxY;
+    highp float col2 = uv.y < 1.0 - diffY.x ? 1.0 : 0.0;
     if (uv.y > 0.5)
     {
         maxY = 1.0;
@@ -21,7 +22,7 @@ void main(void)
     else
     {
         maxY = 0.0;
-        minY = diffY.y;
+        minY = diffY.x;
     }
     if (uv.x > 0.5)
     {
@@ -36,5 +37,5 @@ void main(void)
     if (debug != 0)
         fragColor = vec4(1.0, 1.0, 0.0, 1.0);
     else
-        fragColor = vec4(1.0, smoothstep(maxY, minY, uv.y), 0.0, smoothstep(max, min, uv.x));
+        fragColor = vec4(1.0, uv.y, col2, smoothstep(max, min, uv.x));
 }

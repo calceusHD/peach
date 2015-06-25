@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 
 add_subdirectory(ext)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -std=c++11")
 set(SOURCE_FILES)
 include(gl.cmake)
 include(font.cmake)
@@ -23,7 +23,10 @@ set(LIBS glfw glew freetype)
 if(WIN32)
 list(APPEND LIBS opengl32 gdi32)
 else()
-list(APPEND LIBS GL GLU X11 Xi Xcursor Xxf86vm pthread Xrandr wayland-client wayland-egl xkbcommon EGL)
+find_package(OpenGL REQUIRED)
+find_package(X11 REQUIRED)
+
+list(APPEND LIBS GL GLU X11 EGL wayland-client wayland-egl pthread xkbcommon Xxf86vm Xi Xrandr Xcursor)
 
 endif()
-target_link_libraries(Peach ${LIBS})
+target_link_libraries(Peach  ${LIBS})

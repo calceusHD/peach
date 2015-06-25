@@ -45,41 +45,53 @@ unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, 
     {
         float lim = std::min(length, std::max(glm::length(lineP), glm::length(lineN)));
         printf("corner too sharp!%f, id:%i, %f\n", scale, tgt, glm::dot(normalP, lineN));
+        glm::vec2 co = glm::vec2(length / (glm::length(normalP - normalN) * width * sqrtf(scale * scale - 1.0f)));
         if (glm::dot(normalP, lineN) < 0)
         {
+            
+            printf("cutoff: %f, %f\n", co.x, co.y);
+            
             tgt[0].pos = cur + normalP * width;
             tgt[0].texCoords = glm::vec2(1.0f, v1);
             tgt[0].width = width;
+            tgt[0].cutoff = co;
             
             tgt[1].pos = cur - miter * lim;
             tgt[1].texCoords = glm::vec2(0.0f, v1);
             tgt[1].width = width;
+            tgt[1].cutoff = co;
 
             tgt[2].pos = cur + normalN * width;
             tgt[2].texCoords = glm::vec2(1.0f, v2);
             tgt[2].width = 0.5f*(width + lim);
+            tgt[2].cutoff = co;
             
             tgt[3].pos = cur - miter * lim;
             tgt[3].texCoords = glm::vec2(0.0f, v2);
             tgt[3].width = 0.5f*(width + lim);
+            tgt[3].cutoff = co;
         }
         else
         {
             tgt[0].pos = cur + miter * lim;
             tgt[0].texCoords = glm::vec2(1.0f, v1);
             tgt[0].width = width;
+            tgt[0].cutoff = co;
             
             tgt[1].pos = cur - normalP * width;
             tgt[1].texCoords = glm::vec2(0.0f, v1);
             tgt[1].width = width;
+            tgt[1].cutoff = co;
 
             tgt[2].pos = cur + miter * lim;
             tgt[2].texCoords = glm::vec2(1.0f, v2);
             tgt[2].width = 0.5f*(width + lim);
+            tgt[2].cutoff = co;
             
             tgt[3].pos = cur - normalN * width;
             tgt[3].texCoords = glm::vec2(0.0f, v2);
             tgt[3].width = 0.5f*(width + lim);
+            tgt[3].cutoff = co;
             
         }
         return 2;
@@ -87,12 +99,12 @@ unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, 
     }
     else
     {
-        glm::vec2 co = glm::vec2(0.0f, width * sqrtf(scale * scale - 1));
+        glm::vec2 co = glm::vec2(0.0f, length * sqrtf(scale * scale - 1));
         if (count % 2 == 0)
             co = co.xy();
         else
             co = co.yx();
-        printf("%f\n", width * sqrtf(scale * scale - 1));
+        printf("co: %f, width: %f\n", length / ( width * sqrtf(scale * scale - 1)), width);
 
         
         tgt[0].pos = cur + miter * length;
@@ -110,7 +122,3 @@ unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, 
     }
     
 }
-
-
-
-

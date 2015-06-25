@@ -48,18 +48,14 @@ bool DistMap::checkAround(unsigned int x, unsigned int y)
 {
     bool color = getColor(x, y);
 
-    if ( x > 0 )
-        if ( color != getColor(x - 1, y) )
-            return false;
-    if ( y > 0 )
-        if ( color != getColor(x, y - 1) )
-            return false;
-    if ( x < size - 1 )
-        if ( color != getColor(x + 1, y) )
-            return false;
-    if ( y < size - 1 )
-        if ( color != getColor(x, y + 1) )
-            return false;
+    if ( x > 0 && color != getColor(x - 1, y) )
+        return false;
+    if ( y > 0 && color != getColor(x, y - 1) )
+        return false;
+    if ( x < size - 1 && color != getColor(x + 1, y) )
+        return false;
+    if ( y < size - 1 && color != getColor(x, y + 1) )
+        return false;
 
     return true;
 }
@@ -93,7 +89,6 @@ float DistMap::findNearest(unsigned int x, unsigned int y)
 
     while (cnt--)
     {
-
         unsigned int k = (pos - (*tmp)[cnt]).lengthSq();
         if ( k < idist )
             idist = k;
@@ -106,11 +101,7 @@ float *DistMap::generate(unsigned int sizeo)
 {
     float *datao = new float[sizeo * sizeo];
 
-
     if ( this->valid )
-
-
-
         for (unsigned int j = 0;j < sizeo;++j)
         {
             for (unsigned int i = 0;i < sizeo;++i)

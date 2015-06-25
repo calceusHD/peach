@@ -1,15 +1,14 @@
 
 
-#version 300 es
+#version 330
 
 layout(location = 0) in vec2 pos;
 layout(location = 1) in vec2 texCoords;
 layout(location = 2) in float widthIn;
 layout(location = 3) in vec2 cutoffIn;
 layout(location = 4) in float lengthIn;
+
 out highp vec2 uv;
-
-
 flat out highp vec2 cutoff;
 flat out highp float length;
 flat out highp float width;

@@ -5,7 +5,7 @@
  *      Author: ICH
  */
 
-#version 300 es
+#version 330
 
 uniform sampler2DArray tex;
 
@@ -49,5 +49,5 @@ void main(void)
     fTmp = smoothstep(0.5 - nStepSize, 0.5 + nStepSize, fTmp);
 
 
-    fragColor = vec4(1.0, 1.0, 1.0, fTmp);
+    fragColor = vec4(1.0, fTmp, fTmp, 1.0);
 }

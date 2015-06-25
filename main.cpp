@@ -1,5 +1,6 @@
 #include <iostream>
 #include <GL/glew.h>
+#include "glm/vec2.hpp"
 #include <GLFW/glfw3.h>
 #include <cstdio>
 #include <vector>
@@ -19,7 +20,7 @@ class Main {
     Font* font;
     TextureManager * tm;
     TileRenderer *tr;
-    Vec2<unsigned int> screen;
+    glm::uvec2 screen;
     bool isClicked;
     Tile* t;
     std::vector<glm::vec2> points;
@@ -28,13 +29,14 @@ class Main {
         Main() 
         {
             isClicked = false;
-            screen = Vec2<unsigned int>(800, 600);
+            screen = glm::uvec2(800, 600);
             std::setlocale(LC_ALL, "en_US.UTF-8");
             glfwInit();
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
             GLFWwindow* window = glfwCreateWindow(screen.x, screen.y, "test", nullptr, nullptr);
             if (window == nullptr)
             {
@@ -49,6 +51,7 @@ class Main {
             glfwMakeContextCurrent(window);
             glewExperimental = true;
             glewInit();
+            glGetError();
             
             //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
             glDebugMessageCallback(debugCallback, nullptr);
@@ -90,7 +93,7 @@ class Main {
             //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
             //t.addStroke(new Stroke((glm::vec2*)new float[8]{-0.2f, 0.1f, 0.3f, 0.0f, -0.2f, -0.01f}, 3, 0.08f));
             double time, timeo;
-            glfwSwapInterval(1);
+            glfwSwapInterval(2);
             
             while(!glfwWindowShouldClose(window))
             {
@@ -120,7 +123,7 @@ class Main {
         glViewport(0, 0, w, h);
         
         Main* main = (Main*)glfwGetWindowUserPointer(win);
-        main->screen = Vec2<unsigned int>(w, h);
+        main->screen = glm::uvec2(w, h);
         main->print->setScreenSize(main->screen);
         main->tr->setScreenSize(main->screen);
         
@@ -147,7 +150,7 @@ class Main {
         {
             if (action == GLFW_RELEASE)
             {
-                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.07f));
+                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.004f));
                 main->points.clear();
             }
             main->isClicked = (action == GLFW_PRESS);

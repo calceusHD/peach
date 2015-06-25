@@ -5,7 +5,7 @@
  *      Author: ICH
  */
 
-#version 300 es
+#version 330
 
 layout(location = 0) in vec4 pos;
 layout(location = 1) in uint charDataIn;

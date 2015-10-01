@@ -1,1 +1,9 @@
-list(APPEND SOURCE_FILES font/DistMap.cpp font/Font.cpp font/FreeType.cpp font/GlyphData.cpp font/Hash.cpp font/Matrix.cpp font/Print.cpp font/Vec2.cpp)
+list(APPEND SOURCE_FILES 
+    src/font/DistMap.cpp
+    src/font/Font.cpp
+    src/font/FreeType.cpp
+    src/font/GlyphData.cpp
+    src/font/Hash.cpp
+    src/font/Matrix.cpp
+    src/font/Print.cpp
+    src/font/Vec2.cpp)

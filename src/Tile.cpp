@@ -17,6 +17,7 @@ Tile::Tile() {
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
+    glEnableVertexAttribArray(5);
     
     glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, pos));
@@ -24,12 +25,13 @@ Tile::Tile() {
     glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, width));
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, cutoff));
     glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, length));
+    glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, rotation));
     
     
     
     //addStroke(new Stroke((glm::vec2*)new float[8]{TILE_SIZE, 0.0f, TILE_SIZE, TILE_SIZE, 0.0f, 0.0f, 0.0f, TILE_SIZE}, 4, 0.04f));
-    addStroke(new Stroke((glm::vec2*)new float[8]{0.23f, 0.3f, 0.3f, -0.3f, 0.25f, 0.3f}, 3, 0.04f));
-    addStroke(new Stroke((glm::vec2*)new float[8]{0.0f, 0.3f, -0.1f, -0.3f, -0.05f, 0.3f}, 3, 0.04f));
+    addStroke(new Stroke((glm::vec2*)new float[8]{0.43f, 0.3f, 0.3f, -0.3f, 0.25f, 0.3f}, 3, 0.04f));
+    addStroke(new Stroke((glm::vec2*)new float[8]{0.2f, -0.3f, -0.1f, -0.3f, -0.05f, 0.3f}, 3, 0.04f));
     //addStroke(new Stroke((glm::vec2*)new float[8]{TILE_SIZE, 0.0f, TILE_SIZE, TILE_SIZE, 0.0f, 0.0f, 0.0f, TILE_SIZE}, 4, 0.04f));
 }
 
@@ -49,10 +51,9 @@ void Tile::generateTileData() {
         return;
     m_dirty = false;
     unsigned int maxVertCount = 0;
-    unsigned int vertCount = 0;
     for (Stroke* s : m_strokes)
     {
-        maxVertCount += s->m_lineCnt * 3;
+        maxVertCount += s->m_lineCnt * 6;
     }
     delete[] m_firsts;
     delete[] m_counts;
@@ -71,6 +72,7 @@ void Tile::generateTileData() {
         
         offs += verts;
     }
+    printf("vertices: %i of %i", offs, maxVertCount);
     glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer);
     glBufferData(GL_ARRAY_BUFFER, offs * sizeof(Vertex), buffer, GL_STATIC_DRAW);
     

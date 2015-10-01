@@ -32,7 +32,7 @@ void TileRenderer::renderTile(Tile* t) {
     glUniform1i(debugUniform, debug);
     glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, mvp.data.data());
     glBindVertexArray(t->m_glVao);
-    glMultiDrawArrays(debug ? GL_LINE_STRIP : GL_TRIANGLE_STRIP, t->m_firsts, t->m_counts, t->m_strokes.size());
+    glMultiDrawArrays(debug ? GL_LINE_STRIP : GL_TRIANGLES, t->m_firsts, t->m_counts, t->m_strokes.size());
 }
 
 void TileRenderer::setScreenSize(Vec2<unsigned int> size) {

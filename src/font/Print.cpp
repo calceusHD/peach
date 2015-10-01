@@ -135,7 +135,6 @@ void Print::printfAt(float x, float y, float sx, float sy, const char *fmt, ...)
     glUniform1f(m_stepSize, 2 / ( sx) );
 
     glUniform1i(m_tex, _font->_textureNumber);
-
     glUniformMatrix4fv(m_charMat, 1,  GL_FALSE, tmpmat.data.data());
     glDrawArrays(GL_TRIANGLES, 0, cCnt * 6);
 

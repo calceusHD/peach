@@ -1,1 +1,4 @@
-list(APPEND SOURCE_FILES gl/Program.cpp gl/Shader.cpp gl/TextureManager.cpp)
+list(APPEND SOURCE_FILES
+    src/gl/Program.cpp 
+    src/gl/Shader.cpp
+    src/gl/TextureManager.cpp)

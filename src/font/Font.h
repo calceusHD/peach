@@ -38,16 +38,16 @@ class Font
         float *dataOut;
 
     };
-    private:
-    	std::mutex m_CtSec;
-    	std::unordered_map<unsigned int, unsigned int> m_charToIndex;
-        const char *m_Name;
-        FreeType m_freeType;
-        
     public:
-        unsigned int m_Size;
-        unsigned int m_TextureNumber;
-        std::vector<GlyphData> m_Glyphs;
+    	std::mutex ctSec;
+    	std::unordered_map<unsigned int, unsigned int> m_charToIndex;
+        std::vector<float> _data;
+        std::vector<GlyphData> _glyphs;
+        unsigned int _size;
+        unsigned int _textureNumber;
+        const char *_name;
+        FreeType m_freeType;
+
         Font(unsigned int size, const char *name, unsigned int textureSize, TextureManager *textureManager);
         virtual ~Font();
 

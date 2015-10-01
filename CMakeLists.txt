@@ -11,10 +11,10 @@ include(gl.cmake)
 include(font.cmake)
 
 file(COPY res DESTINATION ${PEACH_BINARY_DIR})
-list(APPEND SOURCE_FILES Tile.cpp TileRenderer.cpp Stroke.cpp LineGenrator.cpp Vertex.cpp)
-add_executable(Peach main.cpp ${SOURCE_FILES})
+list(APPEND SOURCE_FILES src/Tile.cpp src/TileRenderer.cpp src/Stroke.cpp src/LineGenrator.cpp src/Vertex.cpp)
+add_executable(Peach src/main.cpp ${SOURCE_FILES})
 set_target_properties(Peach PROPERTIES COMPILE_DEFINITIONS "GLEW_STATIC=1 GLM_FORCE_RADIANS=1")
-target_include_directories(Peach PUBLIC ext/glew/include ext/glfw/include ext/glm ext/freetype/include .)
+target_include_directories(Peach PUBLIC ext/glew/include ext/glfw/include ext/glm ext/freetype/include src)
 add_custom_command(TARGET Peach POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_SOURCE_DIR}/res"

@@ -7,25 +7,25 @@
 #include <GL/glew.h>
 #include <cstdio>
 #include "gl/Program.h"
-#include "glm/glm.hpp"
 #include "font/Vec2.h"
+#include "font/Matrix.h"
 
 class TileRenderer {
 public:
     Program program;
-    glm::uvec2 size;
+    Vec2<unsigned int> size;
     unsigned int sizeUniform;
     unsigned int mvpUniform;
     unsigned int debugUniform;
     bool debug;
-    glm::mat4 mvp;
+    Matrix<float> mvp;
     TileRenderer();
     TileRenderer(const TileRenderer& orig);
     virtual ~TileRenderer();
     
     void setDebug(bool on);
     bool getDebug();
-    void setScreenSize(glm::uvec2 size);
+    void setScreenSize(Vec2<unsigned int> size);
     void renderTile(Tile* t);
 private:
 

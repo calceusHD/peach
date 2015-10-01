@@ -4,10 +4,9 @@
 #include "Stroke.h"
 #include "Tile.h"
 #include "gl/Program.h"
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "font/Matrix.h"
 
-TileRenderer::TileRenderer() : mvp(1.0f),
+TileRenderer::TileRenderer() : mvp(IDENTITY_MATRIX),
     debug(false) {
     
     program.attach(new Shader("res/shader/vertex.c", true, GL_VERTEX_SHADER));
@@ -31,15 +30,16 @@ void TileRenderer::renderTile(Tile* t) {
     program.use();
     glUniform1f(sizeUniform, size.length());
     glUniform1i(debugUniform, debug);
-    glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, mvp.data.data());
     glBindVertexArray(t->m_glVao);
-    glMultiDrawArrays(debug ? GL_LINE_STRIP : GL_TRIANGLE_STRIP, t->m_firsts, t->m_counts, t->m_strokes.size());
+    glMultiDrawArrays(debug ? GL_LINE_STRIP : GL_TRIANGLES, t->m_firsts, t->m_counts, t->m_strokes.size());
 }
 
-void TileRenderer::setScreenSize(glm::uvec2 size) {
+void TileRenderer::setScreenSize(Vec2<unsigned int> size) {
     this->size = size;
     
-    mvp = glm::scale(glm::mat4(1.0f), glm::vec3(1000.0f/size.x, 1000.0f/size.y, 1.0f));
+    mvp.set(IDENTITY_MATRIX);
+    mvp.scale(1000.0f/size.x, 1000.0f/size.y, 1.0f);
 }
 
 void TileRenderer::setDebug(bool on) {

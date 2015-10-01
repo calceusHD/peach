@@ -32,10 +32,10 @@ unsigned int Stroke::generateVertexData(Vertex* tgt) {
         glm::vec2 prev = first ? glm::vec2(0.0f) : m_linePts[i - 1];
         glm::vec2 cur = m_linePts[i];
         glm::vec2 next = last ? glm::vec2(0.0f) : m_linePts[i + 1];
-        pointCnt += LineGenrator::generateStroke(first, last, cur, next, prev, tgt + 2 * pointCnt, m_lineWidth, pointCnt);
+        pointCnt += LineGenrator::generateStroke(first, last, cur, next, prev, tgt + pointCnt, m_lineWidth, pointCnt);
         ++i;
     }
-    return pointCnt * 2;
+    return pointCnt;
 }
 
 void Stroke::setWidth(float width) {

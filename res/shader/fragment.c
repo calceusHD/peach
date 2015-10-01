@@ -5,37 +5,32 @@ in highp vec2 uv;
 flat in highp float width;
 flat in highp float length;
 flat in highp vec2 cutoff;
+flat in highp vec2 rotation;
 uniform highp int debug;
 uniform highp float size;
 void main(void)
 {
-    highp float diff = 2.8 / width / 1000.0;
-    highp vec2 diffY = 2.8 / cutoff / 1000.0 * 10.0;
-    highp float min, max;
-    highp float minY, maxY;
-    highp float col2 = uv.y < 1.0 - diffY.x ? 1.0 : 0.0;
-    if (uv.y > 0.5)
-    {
-        maxY = 1.0;
-        minY = 1.0 - diffY.x;
+    highp vec2 uv2;
+    uv2.x = uv.x;
+    if (abs(uv.y) < 1.0) {
+        uv2.y = 0.0;
+    } else {
+        uv2.y = ( abs(uv.y) - 1.0 )  * length / ( 2.0 * width);
     }
-    else
-    {
-        maxY = 0.0;
-        minY = diffY.x;
+    highp vec2 uv3 = mat2(rotation.y, rotation.x, -rotation.x, rotation.y) * ((uv + vec2(0.0, 1.0)) * vec2(-1.0, length / ( 2.0 * width)));
+    if (uv3.y < 0.0) {
+        uv3.y = 0.0;
     }
-    if (uv.x > 0.5)
-    {
-        max = 1.0;
-        min = 1.0 - diff;
+    //start circle is at (-1.0, 0.0)  ? 
+
+    highp float color = smoothstep(0.9 , 0.7, uv2.x * uv2.x + uv2.y * uv2.y); // < 0.9 ? 1.0 : 0.0;
+    highp float color2;
+    if (abs(rotation.x) < 0.1 && abs(rotation.y) < 0.1) {
+        color2 = 0.0;
+    } else {
+        color2 = smoothstep(0.9 ,0.7, uv3.x * uv3.x + uv3.y * uv3.y);// < 0.9 ? 1.0 : 0.0;
     }
-    else
-    {
-        max = 0.0;
-        min = diff;
-    }
-    if (debug != 0)
-        fragColor = vec4(1.0, 1.0, 0.0, 1.0);
-    else
-        fragColor = vec4(1.0, uv.y, col2, smoothstep(max, min, uv.x));
+    color *= 0.5;
+    color2 *= 0.5;
+    fragColor = vec4(vec3(1.0), (color - color2) / (1.0 - color2));
 }

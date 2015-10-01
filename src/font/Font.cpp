@@ -17,9 +17,11 @@ void checkErr(const char *name)
 
 
 Font::Font(unsigned int size, const char *name, unsigned int textureSize, TextureManager *textureManager) :
-    m_Size(size),
-    m_TextureNumber(textureManager->getFreeTexture()),
-    m_Name(name),
+    _data(textureSize * textureSize * 0x100),
+    //_glyphs(0x100),
+    _size(size),
+    _textureNumber(textureManager->getFreeTexture()),
+    _name(name),
     m_freeType(size, name)
 {
 
@@ -28,7 +30,7 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
     populateIndex();
 
     float *totalMap = (float*)malloc(sizeSq * m_charToIndex.size() * sizeof(float));
-    m_Glyphs.resize(m_charToIndex.size());
+    _glyphs.resize(m_charToIndex.size());
     bool done = false;
     Hash h;
 
@@ -103,7 +105,6 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
     	{
             unsigned int nOff = i * sizeSq * 4 + j * 4;
             unsigned int oOff = i * sizeSq * 4 + j;
-            
             newMap[nOff + 0] = totalMap[oOff + sizeSq * 0];
             newMap[nOff + 1] = totalMap[oOff + sizeSq * 1];
             newMap[nOff + 2] = totalMap[oOff + sizeSq * 2];
@@ -141,7 +142,7 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
 
     glGenTextures(1, &texture );
 
-    glActiveTexture( GL_TEXTURE0 + m_TextureNumber);
+    glActiveTexture( GL_TEXTURE0 + _textureNumber);
 
     glBindTexture( GL_TEXTURE_2D_ARRAY, texture );
 
@@ -169,8 +170,8 @@ void Font::createGlyphsThreaded(FreeType *ft, unsigned int textureSize, float *t
     td.it = m_charToIndex.begin();
     td.me = this;
     td.cnt = 0;
-    td.name = m_Name;
-    td.size = m_Size;
+    td.name = _name;
+    td.size = _size;
     td.textureSize = textureSize;
     td.dataOut = totalMap;
     
@@ -204,25 +205,25 @@ uint16_t Font::threadFunc(void* lpParam )
     FreeType ft(td->size, td->name);
     std::unordered_map<unsigned int, unsigned int>::iterator i;
     
-    td->me->m_CtSec.lock();
+    td->me->ctSec.lock();
     i = td->it++;
     std::cout << "I am char " << i->first << " with id " << i->second << std::endl;
-    td->me->m_CtSec.unlock();
+    td->me->ctSec.unlock();
     
     while ( i != td->me->m_charToIndex.end())
     {
 
     	FT_GlyphSlot gl = td->me->createGlyph(i->second, i->first, &ft, true);
     	td->me->createTexFromGlyph(td->textureSize, gl, td->dataOut, i->second);
-        td->me->m_CtSec.lock();
+        td->me->ctSec.lock();
         if (td->it == td->me->m_charToIndex.end())
         {
-                td->me->m_CtSec.unlock();
+                td->me->ctSec.unlock();
         	break;
         }
         i = td->it++;
 		std::cout << "I am char " << i->first << " with id " << i->second << std::endl;
-		td->me->m_CtSec.unlock();
+		td->me->ctSec.unlock();
     }
     return 0;
 }
@@ -235,15 +236,15 @@ FT_GlyphSlot Font::createGlyph(unsigned int id, unsigned int c, FreeType *ft, bo
 		gl = ft->createChar(c);
 	else
 		gl = ft->createCharNoRender(c);
-    m_Glyphs[id].advance = Vec2<float>(gl->advance.x >> 6, gl->advance.y >> 6);
-    m_Glyphs[id].size = Vec2<float>(gl->bitmap.width, gl->bitmap.rows);
-    m_Glyphs[id].offset = Vec2<float>(gl->bitmap_left, gl->bitmap_top) + ( Vec2<float>(m_Size) - m_Glyphs[id].size ) / Vec2<float>(-2, 2);
+    _glyphs[id].advance = Vec2<float>(gl->advance.x >> 6, gl->advance.y >> 6);
+    _glyphs[id].size = Vec2<float>(gl->bitmap.width, gl->bitmap.rows);
+    _glyphs[id].offset = Vec2<float>(gl->bitmap_left, gl->bitmap_top) + ( Vec2<float>(_size) - _glyphs[id].size ) / Vec2<float>(-2, 2);
     return gl;
 }
 
 void Font::createTexFromGlyph(unsigned int textureSize, FT_GlyphSlot gl, float *totalMap, unsigned int id)
 {
-    DistMap dm(gl->bitmap.buffer, m_Size, gl->bitmap.width, gl->bitmap.rows);
+    DistMap dm(gl->bitmap.buffer, _size, gl->bitmap.width, gl->bitmap.rows);
 
     float *out = dm.generate(textureSize);
 

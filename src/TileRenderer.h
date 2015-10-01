@@ -18,7 +18,7 @@ public:
     unsigned int mvpUniform;
     unsigned int debugUniform;
     bool debug;
-    Matrix<float> mvp;
+    glm::mat4 mvp;
     TileRenderer();
     TileRenderer(const TileRenderer& orig);
     virtual ~TileRenderer();

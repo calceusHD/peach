@@ -5,6 +5,8 @@
 #include "Tile.h"
 #include "gl/Program.h"
 #include "font/Matrix.h"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 TileRenderer::TileRenderer() : mvp(IDENTITY_MATRIX),
     debug(false) {
@@ -30,7 +32,7 @@ void TileRenderer::renderTile(Tile* t) {
     program.use();
     glUniform1f(sizeUniform, size.length());
     glUniform1i(debugUniform, debug);
-    glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, mvp.data.data());
+    glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, glm::value_ptr(mvp));
     glBindVertexArray(t->m_glVao);
     glMultiDrawArrays(debug ? GL_LINE_STRIP : GL_TRIANGLES, t->m_firsts, t->m_counts, t->m_strokes.size());
 }
@@ -38,8 +40,7 @@ void TileRenderer::renderTile(Tile* t) {
 void TileRenderer::setScreenSize(Vec2<unsigned int> size) {
     this->size = size;
     
-    mvp.set(IDENTITY_MATRIX);
-    mvp.scale(1000.0f/size.x, 1000.0f/size.y, 1.0f);
+    mvp = glm::scale(glm::mat4(1.0f), glm::vec3(1000.0f/size.x, 1000.0f/size.y, 1.0f));
 }
 
 void TileRenderer::setDebug(bool on) {

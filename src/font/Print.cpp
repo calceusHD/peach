@@ -3,7 +3,7 @@
 #include "Print.h"
 
 Print::Print(Font *font) :
-    _mat(IDENTITY_MATRIX),
+    _mat(1.0f),
 	_font(font)
 {
 
@@ -124,18 +124,20 @@ void Print::printfAt(float x, float y, float sx, float sy, const char *fmt, ...)
     glBufferData(GL_ARRAY_BUFFER, cCnt * 6 * sizeof(uint32_t), data, GL_DYNAMIC_DRAW);
 
 
-    Matrix<float> tmpmat(IDENTITY_MATRIX);// = _mat;
+    glm::mat4 tmpmat = glm::mat4(1.0f);
 
-    tmpmat.scale(sx, sy, 1.0f);
+    tmpmat = glm::translate(tmpmat, glm::vec3(x, y, 0.0f));
 
-    tmpmat.translate(x, y, 0.0f);
+    tmpmat = glm::scale(tmpmat, glm::vec3(sx, sy, 1.0f));
 
-    tmpmat *= _mat;
+    
+
+    tmpmat = tmpmat * _mat;
 
     glUniform1f(m_stepSize, 2 / ( sx) );
 
     glUniform1i(m_tex, _font->_textureNumber);
-    glUniformMatrix4fv(m_charMat, 1,  GL_FALSE, tmpmat.data.data());
+    glUniformMatrix4fv(m_charMat, 1,  GL_FALSE, glm::value_ptr(tmpmat));
     glDrawArrays(GL_TRIANGLES, 0, cCnt * 6);
 
     delete[] points;
@@ -182,6 +184,5 @@ void Print::setScreenSize(Vec2<unsigned int> size)
 {
 	_screen = size;
     float ratio = (float)size.x / (float)size.y;
-    _mat.set(IDENTITY_MATRIX);
-    _mat.ortho(-(float)size.x/2, (float)size.x/2, -(float)size.y/2, (float)size.y/2, 1.0f, -1.0f);
+    _mat = glm::ortho(-(float) size.x / 2, (float) size.x / 2, -(float) size.y / 2, (float) size.y / 2, 1.0f, -1.0f);
 }

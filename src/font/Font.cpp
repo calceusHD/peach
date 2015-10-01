@@ -277,7 +277,8 @@ void Font::createTexFromGlyph(unsigned int textureSize, FT_GlyphSlot gl, float *
 
         for (unsigned int j = 0; j< sizeSq;j++)
         {
-            out[j] = out[j] * diff - .5f;
+            out[j] = out[j] * diff + .5f;
+            
         }
     }
 

@@ -7,9 +7,12 @@
 #include <cstring>
 #include <cwchar>
 #include "Print.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include "Matrix.h"
 #include "gl/Program.h"
 #include "Font.h"
+#include <glm/gtc/type_ptr.hpp>
 
 class Print {
 public:
@@ -17,7 +20,7 @@ public:
     Font *_font;
     unsigned int _vbo[2];
     unsigned int _vao;
-    Matrix<float> _mat;
+    glm::mat4 _mat;
     Vec2<unsigned int> _screen;
     
     unsigned int m_stepSize, m_tex, m_charMat;

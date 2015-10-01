@@ -105,7 +105,7 @@ class Main {
                
                 //glDrawArrays(GL_LINE_STRIP, 0, cnt);
                 tr->renderTile(t);
-                print->printfAt(-300.0f, 100.0f, 16.0f, 16.0f, u8"Fps:%03.3f", 1/(time-timeo));
+                print->printfAt(-0.3f, 0.7f, 16.0f, 16.0f, u8"Fps:%03.3f", 1/(time-timeo));
                 glfwSwapBuffers(window);
                 glfwPollEvents();
                 

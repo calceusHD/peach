@@ -17,8 +17,9 @@ public:
     unsigned int sizeUniform;
     unsigned int mvpUniform;
     unsigned int debugUniform;
-    bool debug;
     glm::mat4 mvp;
+    bool debug;
+    
     TileRenderer();
     TileRenderer(const TileRenderer& orig);
     virtual ~TileRenderer();

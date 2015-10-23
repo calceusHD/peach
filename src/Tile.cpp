@@ -21,9 +21,9 @@ Tile::Tile() {
     
     glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, pos));
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_texCoords));
     glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, width));
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, cutoff));
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_cutoff));
     glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, length));
     glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, rotation));
     
@@ -53,7 +53,7 @@ void Tile::generateTileData() {
     unsigned int maxVertCount = 0;
     for (Stroke* s : m_strokes)
     {
-        maxVertCount += s->m_lineCnt * 6;
+        maxVertCount += ( s->m_lineCnt - 1 ) * 6;
     }
     delete[] m_firsts;
     delete[] m_counts;
@@ -63,7 +63,7 @@ void Tile::generateTileData() {
     Vertex* buffer = new Vertex[maxVertCount];
     
     int offs = 0;
-    for (int i = 0; i < m_strokes.size(); ++i)
+    for (unsigned int i = 0; i < m_strokes.size(); ++i)
     {
         Stroke* s = m_strokes.at(i);
         unsigned int verts = s->generateVertexData(buffer + offs);
@@ -72,7 +72,6 @@ void Tile::generateTileData() {
         
         offs += verts;
     }
-    printf("vertices: %i of %i", offs, maxVertCount);
     glBindBuffer(GL_ARRAY_BUFFER, m_glBuffer);
     glBufferData(GL_ARRAY_BUFFER, offs * sizeof(Vertex), buffer, GL_STATIC_DRAW);
     

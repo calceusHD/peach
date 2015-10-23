@@ -47,33 +47,33 @@ unsigned int LineGenrator::generateStroke(bool first, bool last, glm::vec2 cur, 
         float length = glm::length(line);
         float uv = ( length + 2 * width ) / length;
         tgt[0].pos = cur + normal * width - tangent * width;
-        tgt[0].texCoords = glm::vec2(1.0f, -uv);
+        tgt[0].m_texCoords = glm::vec2(1.0f, -uv);
         tgt[0].width = width;
         tgt[0].length = length;
 
         tgt[1].pos = cur - normal * width - tangent * width;
-        tgt[1].texCoords = glm::vec2(-1.0f, -uv);
+        tgt[1].m_texCoords = glm::vec2(-1.0f, -uv);
         tgt[1].width = width;
         tgt[1].length = length;
 
         
         tgt[2].pos = next + normal * width + tangent * width;
-        tgt[2].texCoords = glm::vec2(1.0f, uv);
+        tgt[2].m_texCoords = glm::vec2(1.0f, uv);
         tgt[2].width = width;
         tgt[2].length = length;
         
         tgt[3].pos = cur - normal * width  - tangent * width;
-        tgt[3].texCoords = glm::vec2(-1.0f, -uv);
+        tgt[3].m_texCoords = glm::vec2(-1.0f, -uv);
         tgt[3].width = width;
         tgt[3].length = length;
         
         tgt[4].pos = next - normal * width + tangent * width;
-        tgt[4].texCoords = glm::vec2(-1.0f, uv);
+        tgt[4].m_texCoords = glm::vec2(-1.0f, uv);
         tgt[4].width = width;
         tgt[4].length = length;
         
         tgt[5].pos = next + normal * width + tangent * width;
-        tgt[5].texCoords = glm::vec2(1.0f, uv);
+        tgt[5].m_texCoords = glm::vec2(1.0f, uv);
         tgt[5].width = width;
         tgt[5].length = length;
         return 6;

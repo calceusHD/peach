@@ -135,7 +135,6 @@ class Main {
     static void mouseCallback(GLFWwindow* win, double x, double y) {
         Main* main = (Main*)glfwGetWindowUserPointer(win);
         if (main->isClicked) {
-            //printf("drawing x:%f y:%f\n", x, y);
             main->points.push_back(glm::vec2((x / main->screen.x - 0.5f) * 2.0f * main->screen.x / 1000.0f,
                             -(y / main->screen.y - 0.5f) * 2.0f * main->screen.y / 1000.0f));
         }
@@ -147,7 +146,7 @@ class Main {
         {
             if (action == GLFW_RELEASE)
             {
-                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.07f));
+                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.003f));
                 main->points.clear();
             }
             main->isClicked = (action == GLFW_PRESS);

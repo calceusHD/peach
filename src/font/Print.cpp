@@ -3,8 +3,8 @@
 #include "Print.h"
 
 Print::Print(Font *font) :
-    _mat(1.0f),
-	_font(font)
+    _font(font), _mat(1.0f)
+	
 {
 
     glGenVertexArrays(1, &_vao);
@@ -149,7 +149,6 @@ void Print::printfAt(float x, float y, float sx, float sy, const char *fmt, ...)
 
 unsigned int Print::getUcs4CharFromString(uint32_t *out, unsigned char *in)
 { //FIXME can overflow in buffer if last char contains malformed unicode!
-	unsigned int btCount = 0;
 	unsigned char in1 = *((unsigned char*)in);
 	//uint32_t tmp = 0;
 
@@ -183,6 +182,5 @@ unsigned int Print::getUcs4CharFromString(uint32_t *out, unsigned char *in)
 void Print::setScreenSize(Vec2<unsigned int> size)
 {
 	_screen = size;
-    float ratio = (float)size.x / (float)size.y;
     _mat = glm::ortho(-(float) size.x / 2, (float) size.x / 2, -(float) size.y / 2, (float) size.y / 2, 1.0f, -1.0f);
 }

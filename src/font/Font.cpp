@@ -57,7 +57,6 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
 
     tex.close();
 
-    unsigned int cnt = 0, num = m_charToIndex.size();
 
     if ( !done )
     {
@@ -112,7 +111,6 @@ Font::Font(unsigned int size, const char *name, unsigned int textureSize, Textur
     	}
 
     }
-    unsigned int iTmp = m_charToIndex.size();
 
     unsigned int tmpMod = m_charToIndex.size() % 4U;
     std::cout << tmpMod;

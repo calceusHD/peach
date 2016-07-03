@@ -7,7 +7,9 @@
 #include "font/Print.h"
 #include "TileRenderer.h"
 #include "Tile.h"
+#include "Drawing.h"
 #include "Stroke.h"
+#include "Util.h"
 
 #define mouseDown click && !clickPrev
 #define mouseUp !click && clickPrev
@@ -15,13 +17,15 @@
 
 class Main {
     
+
+    glm::dvec2 old_mouse;
     Print* print;
     Font* font;
     TextureManager * tm;
     TileRenderer *tr;
     Vec2<unsigned int> screen;
     bool isClicked;
-    Tile* t;
+    Drawing* d;
     std::vector<glm::vec2> points;
     public:
     
@@ -33,8 +37,8 @@ class Main {
             glfwInit();
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-            //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
             GLFWwindow* window = glfwCreateWindow(screen.x, screen.y, "test", nullptr, nullptr);
             if (window == nullptr)
             {
@@ -52,7 +56,7 @@ class Main {
             
             //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
             glDebugMessageCallback(debugCallback, nullptr);
-            //glEnable(GL_DEBUG_OUTPUT);
+            glEnable(GL_DEBUG_OUTPUT);
             
             
             printf("%s\n", glGetString(GL_VERSION));
@@ -63,6 +67,7 @@ class Main {
             p->attach(vs);
             p->build();
             p->use();
+            
             tm = new TextureManager();
             font = new Font(512, "res/font/DroidSans.woff", 32, tm);
             print = new Print(font);
@@ -85,12 +90,11 @@ class Main {
             
             
             tr = new TileRenderer();
+            d = new Drawing(tr);
             tr->setScreenSize(screen);
-            t = new Tile();
             //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-            //t.addStroke(new Stroke((glm::vec2*)new float[8]{-0.2f, 0.1f, 0.3f, 0.0f, -0.2f, -0.01f}, 3, 0.08f));
             double time, timeo;
-            glfwSwapInterval(1);
+            glfwSwapInterval(0);
             
             while(!glfwWindowShouldClose(window))
             {
@@ -100,14 +104,11 @@ class Main {
                 
                 glBindVertexArray(vao);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
-             
-                
-               
-                //glDrawArrays(GL_LINE_STRIP, 0, cnt);
-                tr->renderTile(t);
+                d->render();
+                //tr->renderTile(t);
                 print->printfAt(-0.3f, 0.7f, 16.0f, 16.0f, u8"Fps:%03.3f", 1/(time-timeo));
                 glfwSwapBuffers(window);
-                glfwPollEvents();
+                glfwWaitEvents();
                 
             }
 
@@ -135,9 +136,10 @@ class Main {
     static void mouseCallback(GLFWwindow* win, double x, double y) {
         Main* main = (Main*)glfwGetWindowUserPointer(win);
         if (main->isClicked) {
-            main->points.push_back(glm::vec2((x / main->screen.x - 0.5f) * 2.0f * main->screen.x / 1000.0f,
-                            -(y / main->screen.y - 0.5f) * 2.0f * main->screen.y / 1000.0f));
+            main->d->m_tr->offsetCamera((main->old_mouse - glm::dvec2(x, y)) / 1000.0 * 2.0);
+            main->points.push_back(Util::screen2gl(glm::vec2(x, y), main->screen));
         }
+        main->old_mouse = glm::dvec2(x, y);
     }
     
     static void clickCallback(GLFWwindow* win, int button, int action, int mods) {
@@ -146,7 +148,7 @@ class Main {
         {
             if (action == GLFW_RELEASE)
             {
-                main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.003f));
+                //main->t->addStroke(new Stroke(main->points.data(), main->points.size(), 0.003f));
                 main->points.clear();
             }
             main->isClicked = (action == GLFW_PRESS);

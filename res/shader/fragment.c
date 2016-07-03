@@ -24,14 +24,14 @@ void main(void)
     }
     //start circle is at (-1.0, 0.0)  ? 
 
-    highp float color = smoothstep(1.0 , diff, uv2.x * uv2.x + uv2.y * uv2.y); // < 0.9 ? 1.0 : 0.0;
+    highp float color = smoothstep(1.0 , diff, uv2.x * uv2.x + uv2.y * uv2.y);
     highp float color2;
     if (abs(rotation.x) < 0.1 && abs(rotation.y) < 0.1) {
         color2 = 0.0;
     } else {
-        color2 = smoothstep(1.0 , diff, uv3.x * uv3.x + uv3.y * uv3.y);// < 0.9 ? 1.0 : 0.0;
+        color2 = smoothstep(1.0 , diff, uv3.x * uv3.x + uv3.y * uv3.y);
     }
-    color *= 1.0;
-    color2 *= 1.0;
+    color *= 0.7;
+    color2 *= 0.7;
     fragColor = vec4(vec3(1.0), (color - color2) / (1.0 - color2));
 }

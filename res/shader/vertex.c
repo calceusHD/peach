@@ -14,10 +14,13 @@ flat out highp vec2 cutoff;
 flat out highp float length;
 flat out highp float width;
 flat out highp vec2 rotation;
+
 uniform highp mat4 mvp;
+uniform highp vec2 offset;
+
 void main(void)
 {
-    gl_Position = mvp * vec4(pos, 0.0, 1.0);
+    gl_Position = mvp * vec4(pos + offset, 0.0, 1.0);
     uv = texCoords;
     cutoff = cutoffIn;
     width = widthIn;

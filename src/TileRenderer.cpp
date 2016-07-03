@@ -19,6 +19,7 @@ TileRenderer::TileRenderer() : mvp(IDENTITY_MATRIX),
     debugUniform = program.getUniformLocation("debug");
     sizeUniform = program.getUniformLocation("size");
     mvpUniform = program.getUniformLocation("mvp");
+    posUniform = program.getUniformLocation("offset");
 }
 
 
@@ -27,9 +28,17 @@ TileRenderer::~TileRenderer() {
     
 }
 
+void TileRenderer::offsetCamera(glm::vec2 off) {
+    camera_offset += off * glm::vec2(-1.0f, 1.0f);
+    printf("i got offset: %f %f\n", off.x, off.y);
+    camera_offset.x -= trunc(camera_offset.x/Tile::TILE_SIZE) * Tile::TILE_SIZE;
+    camera_offset.y -= trunc(camera_offset.y/Tile::TILE_SIZE) * Tile::TILE_SIZE;
+}
+
 void TileRenderer::renderTile(Tile* t) {
     t->generateTileData();
     program.use();
+    glUniform2f(posUniform, t->getPosition().x * Tile::TILE_SIZE + camera_offset.x, t->getPosition().y * Tile::TILE_SIZE + camera_offset.y);
     glUniform1f(sizeUniform, size.length());
     glUniform1i(debugUniform, debug);
     glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, glm::value_ptr(mvp));

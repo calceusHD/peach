@@ -7,7 +7,8 @@
 #include "Tile.h"
 #include "GL/glew.h"
 
-Tile::Tile() {
+Tile::Tile(glm::i64vec2 position) {
+    m_position = position;
     glGenBuffers(1, &m_glBuffer);
     glGenVertexArrays(1, &m_glVao);
     glBindVertexArray(m_glVao);
@@ -35,7 +36,8 @@ Tile::Tile() {
     //addStroke(new Stroke((glm::vec2*)new float[8]{TILE_SIZE, 0.0f, TILE_SIZE, TILE_SIZE, 0.0f, 0.0f, 0.0f, TILE_SIZE}, 4, 0.04f));
 }
 
-Tile::Tile(const Tile& orig) {
+glm::i64vec2 Tile::getPosition() {
+    return m_position;
 }
 
 Tile::~Tile() {

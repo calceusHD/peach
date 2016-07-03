@@ -12,11 +12,15 @@
 
 class TileRenderer {
 public:
+    glm::vec2 camera_offset;
+    glm::i64vec2 camera_offset_i;
+
     Program program;
     Vec2<unsigned int> size;
     unsigned int sizeUniform;
     unsigned int mvpUniform;
     unsigned int debugUniform;
+    unsigned int posUniform;
     glm::mat4 mvp;
     bool debug;
     
@@ -28,6 +32,8 @@ public:
     bool getDebug();
     void setScreenSize(Vec2<unsigned int> size);
     void renderTile(Tile* t);
+    void offsetCamera(glm::vec2 off);
+    void setCamera(glm::i64vec2 off_i, glm::vec2 off);
 private:
 
 };
